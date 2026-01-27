@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الزهراني بترول - آلة حاسبة لتكلفة الوقود الإضافية</title>
+    <link rel="icon" href="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/dOqNLp8LNNTl7Vlk/alzahrani-logistics-corporate-logo-photoroom-AR03Qav69VTGKk9B.png">
+    
+    <!-- Import Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
+    
+    <style>
+        /* CSS Variables for Themes */
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --background-color: #ffffff;
+            --surface-color: #f8f9fa;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+            --shadow-hover: 0 4px 8px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        /* Dark Theme Variables */
+        .dark-mode {
+            --primary-color: #8ab4f8;
+            --secondary-color: #81c995;
+            --background-color: #202124;
+            --surface-color: #2d2e30;
+            --text-color: #e8eaed;
+            --text-secondary: #9aa0a6;
+            --border-color: #5f6368;
+            --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-hover: 0 4px 8px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header & Logo */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 60px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Control Buttons */
+        .control-btn {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Main Content */
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 992px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styling */
+        .card {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            font-size: 1.2rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+
+        .form-control:disabled {
+            background-color: var(--surface-color);
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .consumption-control {
+            display: flex;
+            gap: 10px;
+        }
+
+        .lock-btn {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+
+        .lock-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .lock-btn.unlocked {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        /* Password Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--background-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 3px;
+            font-family: monospace;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .modal-confirm {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .modal-confirm:hover {
+            background: #0d47a1;
+        }
+
+        .modal-cancel {
+            background: var(--surface-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-cancel:hover {
+            background: var(--border-color);
+        }
+
+        .error-message {
+            color: #ea4335;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Fuel Price Group */
+        .fuel-price-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .fuel-price-input {
+            flex: 1;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Results Card */
+        .results-card {
+            background: linear-gradient(135deg, var(--primary-color), #0d47a1);
+            color: white;
+            padding: 30px;
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .result-label {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .result-unit {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .highlight {
+            color: #ffd54f;
+        }
+
+        /* Button */
+        .calculate-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .calculate-btn:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .header-controls {
+                align-self: flex-end;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .result-value {
+                font-size: 1.6rem;
+            }
+            
+            .consumption-control {
+                flex-direction: column;
+            }
+            
+            .lock-btn {
+                width: 100%;
+                height: 44px;
+            }
+        }
+
+        /* RTL/LTR Support */
+        [dir="rtl"] .logo-container {
+            flex-direction: row;
+        }
+
+        [dir="ltr"] .logo-container {
+            flex-direction: row-reverse;
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .dark-mode .spinner {
+            border-left-color: #8ab4f8;
+        }
+        
+        /* Remove extra distance display */
+        .extra-distance-item {
+            display: none !important;
+        }
+        
+        /* Region Suggestions */
+        .suggestions-box {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .suggestions-box.show {
+            display: block;
+        }
+        
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .suggestion-item:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .region-input-container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/dOqNLp8LNNTl7Vlk/alzahrani-logistics-corporate-logo-photoroom-AR03Qav69VTGKk9B.png" alt="شعار الزهراني بترول" class="logo">
+                <h1 id="main-title">الزهراني بترول - آلة حاسبة لتكلفة الوقود الإضافية</h1>
+            </div>
+            <div class="header-controls">
+                <button class="control-btn" id="theme-toggle" title="تبديل الوضع">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="control-btn" id="language-toggle" title="تغيير اللغة">
+                    <span id="language-icon">🇸🇦</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Calculator -->
+        <main class="calculator-container">
+            <!-- Inputs Card -->
+            <div class="card">
+                <h2 class="card-title" id="inputs-title">🔧 المدخلات</h2>
+                
+                <div class="form-group">
+                    <label for="from-region" class="form-label" id="from-label">منطقة البداية</label>
+                    <div class="region-input-container">
+                        <input type="text" id="from-region" class="form-control" placeholder="ابدأ الكتابة للبحث عن منطقة...">
+                        <div class="suggestions-box" id="from-suggestions"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="to-region" class="form-label" id="to-label">منطقة النهاية</label>
+                    <div class="region-input-container">
+                        <input type="text" id="to-region" class="form-control" placeholder="ابدأ الكتابة للبحث عن منطقة...">
+                        <div class="suggestions-box" id="to-suggestions"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" id="fuel-type-label">نوع الوقود</label>
+                    <select id="fuel-type" class="form-control">
+                        <option value="diesel">ديزل (Diesel)</option>
+                        <option value="gasoline91">بنزين 91 (Gasoline 91)</option>
+                        <option value="gasoline95">بنزين 95 (Gasoline 95)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" id="fuel-price-label">سعر الوقود (لكل لتر)</label>
+                    <div class="fuel-price-group">
+                        <input type="number" id="fuel-price" class="form-control fuel-price-input" step="0.01" min="0.5" max="10" value="2.33">
+                        <span id="currency">SAR</span>
+                    </div>
+                    <div class="toggle-container">
+                        <span id="default-price-label">استخدام السعر الافتراضي</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="use-default-price" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fuel-consumption" class="form-label" id="consumption-label">متوسط استهلاك المركبة (كم/لتر)</label>
+                    <div class="consumption-control">
+                        <input type="number" id="fuel-consumption" class="form-control" step="0.1" min="1" max="50" value="11.5" disabled>
+                        <button class="lock-btn" id="consumption-lock">🔒</button>
+                    </div>
+                    <div class="error-message" id="consumption-error"></div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p id="loading-text">جاري حساب المسافة والتكلفة...</p>
+                </div>
+                
+                <button class="calculate-btn" id="calculate-btn">
+                    <span id="calculate-icon">🧮</span>
+                    <span id="calculate-text">حساب التكلفة الإضافية</span>
+                </button>
+            </div>
+            
+            <!-- Results Card -->
+            <div class="card results-card">
+                <h2 class="card-title" id="results-title">📊 النتائج</h2>
+                
+                <div class="result-item">
+                    <div class="result-label" id="total-distance-label">المسافة المقطوعة</div>
+                    <div class="result-value"><span id="total-distance">0</span> <span class="result-unit">كم</span></div>
+                </div>
+                
+                <div class="result-item extra-distance-item">
+                    <div class="result-label" id="extra-distance-label">الزيادة المضافة</div>
+                    <div class="result-value highlight">+<span id="extra-distance">10</span> <span class="result-unit">كم</span></div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label" id="fuel-needed-label">كمية الوقود المطلوبة</div>
+                    <div class="result-value"><span id="fuel-needed">0</span> <span class="result-unit">لتر</span></div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label" id="extra-cost-label">التكلفة الإضافية النهائية</div>
+                    <div class="result-value"><span id="extra-cost">0</span> <span class="result-unit">ر.س</span></div>
+                </div>
+            </div>
+        </main>
+        
+        <div class="footer">
+            <p id="footer-text">© 2025 الزهراني بترول. جميع الحقوق محفوظة.</p>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="modal-overlay" id="password-modal">
+        <div class="modal">
+            <h3 class="modal-title" id="modal-title">إدخال كلمة المرور</h3>
+            <input type="password" id="password-input" class="modal-input" placeholder="أدخل كلمة المرور" maxlength="4" inputmode="numeric">
+            <div class="error-message" id="password-error"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-cancel" id="modal-cancel">إلغاء</button>
+                <button class="modal-btn modal-confirm" id="modal-confirm">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyApRVM6G-cA-KJ_JiqnxMJm0CB3uS83tX0",
+            authDomain: "za40t-fdc87.firebaseapp.com",
+            databaseURL: "https://za40t-fdc87-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "za40t-fdc87",
+            storageBucket: "za40t-fdc87.firebasestorage.app",
+            messagingSenderId: "294201665623",
+            appId: "1:294201665623:web:06826d4ef9b5c651ef5b12"
+        };
+
+        // Initialize Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+        }
+
+        // Password for consumption field
+        const CONSUMPTION_PASSWORD = "0906";
+        
+        // Language and Theme Management
+        let currentLanguage = 'ar';
+        let isDarkMode = false;
+        let isConsumptionLocked = true;
+        
+        // Default fuel prices in Saudi Arabia
+        const defaultFuelPrices = {
+            'diesel': 2.33, // SAR per liter
+            'gasoline91': 2.18, // SAR per liter
+            'gasoline95': 2.33 // SAR per liter
+        };
+        
+        // Default consumption values
+        const defaultConsumptions = {
+            'diesel': 11.5, // Average of 10-13 km/liter
+            'gasoline91': 18, // Fixed at 18 km/liter
+            'gasoline95': 18  // Fixed at 18 km/liter
+        };
+
+        // Saudi Regions Database - 50+ مناطق سعودية (مدن، أرياف، أحياء، قرى)
+        const saudiRegions = [
+            // المدن الرئيسية
+            "الرياض", "جدة", "الدمام", "مكة المكرمة", "المدينة المنورة",
+            "الطائف", "الخبر", "الظهران", "الجبيل", "ينبع",
+            "تبوك", "أبها", "حائل", "بريدة", "سكاكا",
+            "عرعر", "نجران", "جازان", "الباحة", "الخرج",
+            
+            // مناطق وأرياف الرياض
+            "ضرما", "المزاحمية", "حوطة بني تميم", "الحريق", "الثمامة",
+            "الدرعية", "العيينة", "الملقا", "العريجا", "شقراء",
+            "الدوادمي", "الغاط", "الزلفي", "وادي الدواسر", "السليل",
+            
+            // مناطق وأرياف مكة
+            "القنفذة", "الليث", "رابغ", "خليص", "الجموم",
+            "الكامل", "الخرمة", "تربة", "المويه", "مهد الذهب",
+            
+            // مناطق وأرياف المدينة
+            "العلا", "خيبر", "المهد", "الحناكية", "بدر",
+            "ينبع البحر", "ينبع النخل", "العيص", "الوجه", "ضباء",
+            
+            // مناطق وأرياف الشرقية
+            "الأحساء", "القطيف", "بقيق", "قرية العليا", "النعيرية",
+            "العديد", "صفوى", "تاروت", "الجبيل الصناعية", "الخفجي",
+            
+            // مناطق وأرياف الجنوب
+            "شرورة", "الخرخير", "طريف", "الوديعة", "صبيا",
+            "أحد المسارحة", "أبو عريش", "صامطة", "بيش", "ضمد",
+            
+            // أحياء الرياض
+            "الملز", "النسيم", "الشميسي", "العليا", "المرسلات",
+            "الربوة", "العقيق", "الغدير", "اليرموك", "الازدهار",
+            
+            // أحياء جدة
+            "النور", "الروضة", "النسيم", "السلامة", "الزهراء",
+            "الشرائع", "الكورنيش", "الندى", "المنتزه", "الفيحاء",
+            
+            // قرى وهجر
+            "حرض", "الخوبة", "العارض", "الطرف", "الأوجلة"
+        ];
+
+        // مسافات تقريبية بين المدن الرئيسية (بالكيلومتر)
+        const cityDistances = {
+            // الرياض إلى
+            'الرياض-جدة': 950, 'الرياض-الدمام': 395, 'الرياض-مكة المكرمة': 880,
+            'الرياض-المدينة المنورة': 850, 'الرياض-الطائف': 780, 'الرياض-أبها': 950,
+            'الرياض-بريدة': 330, 'الرياض-حائل': 640, 'الرياض-تبوك': 1150,
+            'الرياض-جازان': 1250, 'الرياض-نجران': 950, 'الرياض-الخرج': 85,
+            
+            // جدة إلى
+            'جدة-مكة المكرمة': 80, 'جدة-المدينة المنورة': 420, 'جدة-الطائف': 170,
+            'جدة-ينبع': 350, 'جدة-رابغ': 150, 'جدة-القنفذة': 290,
+            
+            // الدمام إلى
+            'الدمام-الرياض': 395, 'الدمام-الأحساء': 150, 'الدمام-الجبيل': 100,
+            'الدمام-الظهران': 20, 'الدمام-الخبر': 25,
+            
+            // أبها إلى
+            'أبها-جازان': 230, 'أبها-نجران': 500, 'أبها-الباحة': 200,
+            
+            // تبوك إلى
+            'تبوك-حائل': 650, 'تبوك-الجوف': 450, 'تبوك-الرياض': 1150,
+            
+            // مناطق شمالية
+            'عرعر-رفحاء': 120, 'رفحاء-طريف': 200, 'طريف-عرعر': 320,
+            
+            // مناطق جنوبية
+            'نجران-شرورة': 350, 'شرورة-الرياض': 1300, 'القنفذة-مكة المكرمة': 320,
+            
+            // المناطق الداخلية
+            'بريدة-حائل': 310, 'حائل-تبوك': 650, 'الخرج-الرياض': 85,
+            'الدوادمي-الرياض': 330, 'شقراء-الرياض': 190, 'المزاحمية-الرياض': 60
+        };
+
+        // Translations
+        const translations = {
+            ar: {
+                title: "الزهراني بترول - آلة حاسبة لتكلفة الوقود الإضافية",
+                inputsTitle: "🔧 المدخلات",
+                fromLabel: "منطقة البداية",
+                fromPlaceholder: "ابدأ الكتابة للبحث عن منطقة...",
+                toLabel: "منطقة النهاية",
+                toPlaceholder: "ابدأ الكتابة للبحث عن منطقة...",
+                fuelTypeLabel: "نوع الوقود",
+                fuelPriceLabel: "سعر الوقود (لكل لتر)",
+                defaultPriceLabel: "استخدام السعر الافتراضي",
+                consumptionLabel: "متوسط استهلاك المركبة (كم/لتر)",
+                calculateBtn: "حساب التكلفة الإضافية",
+                resultsTitle: "📊 النتائج",
+                totalDistanceLabel: "المسافة المقطوعة",
+                fuelNeededLabel: "كمية الوقود المطلوبة",
+                extraCostLabel: "التكلفة الإضافية النهائية",
+                currency: "ر.س",
+                loadingText: "جاري حساب المسافة والتكلفة...",
+                footerText: "© 2025 الزهراني بترول. جميع الحقوق محفوظة.",
+                themeIcon: "🌙",
+                languageIcon: "🇸🇦",
+                
+                diesel: "ديزل (Diesel)",
+                gasoline91: "بنزين 91 (Gasoline 91)",
+                gasoline95: "بنزين 95 (Gasoline 95)",
+                
+                km: "كم",
+                liter: "لتر",
+                
+                modalTitle: "إدخال كلمة المرور",
+                passwordPlaceholder: "أدخل كلمة المرور",
+                cancelBtn: "إلغاء",
+                confirmBtn: "تأكيد",
+                
+                errorRegion: "يرجى تحديد منطقتي البداية والنهاية بشكل صحيح",
+                errorDistance: "تعذر حساب المسافة بين المناطق المحددة. يرجى التأكد من صحة المناطق المدخلة",
+                errorApi: "خطأ في الاتصال بخدمة الحساب",
+                errorPassword: "كلمة المرور غير صحيحة",
+                errorConsumptionRange: "قيمة استهلاك الديزل يجب أن تكون بين 10 و 13 كم/لتر",
+                errorConsumptionGasoline: "قيمة استهلاك البنزين يجب أن تكون 18 كم/لتر",
+                errorInvalidRegion: "يرجى إدخال مناطق سعودية صحيحة"
+            },
+            en: {
+                title: "Alzahrani Petroleum - Smart Fuel Extra Cost Calculator",
+                inputsTitle: "🔧 Inputs",
+                fromLabel: "From Region",
+                fromPlaceholder: "Start typing to search for region...",
+                toLabel: "To Region",
+                toPlaceholder: "Start typing to search for region...",
+                fuelTypeLabel: "Fuel Type",
+                fuelPriceLabel: "Fuel Price (per liter)",
+                defaultPriceLabel: "Use Default Price",
+                consumptionLabel: "Vehicle Fuel Consumption (km/liter)",
+                calculateBtn: "Calculate Extra Cost",
+                resultsTitle: "📊 Results",
+                totalDistanceLabel: "Distance Traveled",
+                fuelNeededLabel: "Fuel Required",
+                extraCostLabel: "Final Extra Cost",
+                currency: "SAR",
+                loadingText: "Calculating distance and cost...",
+                footerText: "© 2025 Alzahrani Petroleum. All rights reserved.",
+                themeIcon: "☀️",
+                languageIcon: "🇬🇧",
+                
+                diesel: "Diesel",
+                gasoline91: "Gasoline 91",
+                gasoline95: "Gasoline 95",
+                
+                km: "km",
+                liter: "L",
+                
+                modalTitle: "Enter Password",
+                passwordPlaceholder: "Enter password",
+                cancelBtn: "Cancel",
+                confirmBtn: "Confirm",
+                
+                errorRegion: "Please specify both starting and destination regions correctly",
+                errorDistance: "Unable to calculate distance between selected regions. Please verify the regions entered",
+                errorApi: "Error connecting to calculation service",
+                errorPassword: "Incorrect password",
+                errorConsumptionRange: "Diesel consumption must be between 10 and 13 km/liter",
+                errorConsumptionGasoline: "Gasoline consumption must be 18 km/liter",
+                errorInvalidRegion: "Please enter valid Saudi regions"
+            }
+        };
+
+        // DOM Elements
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const languageToggle = document.getElementById('language-toggle');
+        const languageIcon = document.getElementById('language-icon');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const loadingElement = document.getElementById('loading');
+        const fuelTypeSelect = document.getElementById('fuel-type');
+        const fuelPriceInput = document.getElementById('fuel-price');
+        const useDefaultPriceCheckbox = document.getElementById('use-default-price');
+        const fromRegionInput = document.getElementById('from-region');
+        const toRegionInput = document.getElementById('to-region');
+        const fuelConsumptionInput = document.getElementById('fuel-consumption');
+        const consumptionLockBtn = document.getElementById('consumption-lock');
+        const passwordModal = document.getElementById('password-modal');
+        const passwordInput = document.getElementById('password-input');
+        const modalConfirm = document.getElementById('modal-confirm');
+        const modalCancel = document.getElementById('modal-cancel');
+        const passwordError = document.getElementById('password-error');
+        const consumptionError = document.getElementById('consumption-error');
+        const fromSuggestions = document.getElementById('from-suggestions');
+        const toSuggestions = document.getElementById('to-suggestions');
+
+        // Initialize the calculator
+        function initCalculator() {
+            // Set up event listeners
+            themeToggle.addEventListener('click', toggleTheme);
+            languageToggle.addEventListener('click', toggleLanguage);
+            calculateBtn.addEventListener('click', calculateCost);
+            fuelTypeSelect.addEventListener('change', handleFuelTypeChange);
+            useDefaultPriceCheckbox.addEventListener('change', toggleFuelPriceInput);
+            consumptionLockBtn.addEventListener('click', toggleConsumptionLock);
+            modalConfirm.addEventListener('click', verifyPassword);
+            modalCancel.addEventListener('click', closePasswordModal);
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') verifyPassword();
+            });
+            
+            // Setup region input listeners
+            setupRegionInputListeners();
+            
+            // Apply saved preferences
+            applySavedPreferences();
+            
+            // Set default fuel price based on initial selection
+            updateFuelPrice();
+            
+            // Set default consumption based on initial fuel type
+            updateConsumption();
+        }
+
+        // Setup region input listeners with suggestions
+        function setupRegionInputListeners() {
+            // From region input
+            fromRegionInput.addEventListener('input', function() {
+                showSuggestions(this.value, fromSuggestions);
+            });
+            
+            fromRegionInput.addEventListener('focus', function() {
+                if (this.value) {
+                    showSuggestions(this.value, fromSuggestions);
+                } else {
+                    showAllSuggestions(fromSuggestions);
+                }
+            });
+            
+            // To region input
+            toRegionInput.addEventListener('input', function() {
+                showSuggestions(this.value, toSuggestions);
+            });
+            
+            toRegionInput.addEventListener('focus', function() {
+                if (this.value) {
+                    showSuggestions(this.value, toSuggestions);
+                } else {
+                    showAllSuggestions(toSuggestions);
+                }
+            });
+            
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.region-input-container')) {
+                    hideSuggestions();
+                }
+            });
+        }
+
+        // Show all suggestions
+        function showAllSuggestions(suggestionsBox) {
+            const filtered = saudiRegions;
+            displaySuggestions(filtered, suggestionsBox);
+        }
+
+        // Show filtered suggestions
+        function showSuggestions(searchTerm, suggestionsBox) {
+            if (!searchTerm.trim()) {
+                showAllSuggestions(suggestionsBox);
+                return;
+            }
+            
+            const filtered = saudiRegions.filter(region => 
+                region.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            displaySuggestions(filtered, suggestionsBox);
+        }
+
+        // Display suggestions in the box
+        function displaySuggestions(regions, suggestionsBox) {
+            suggestionsBox.innerHTML = '';
+            
+            if (regions.length === 0) {
+                suggestionsBox.classList.remove('show');
+                return;
+            }
+            
+            // Show only top 10 suggestions
+            const topRegions = regions.slice(0, 10);
+            
+            topRegions.forEach(region => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.textContent = region;
+                div.addEventListener('click', function() {
+                    const input = suggestionsBox.parentElement.querySelector('input');
+                    input.value = region;
+                    suggestionsBox.classList.remove('show');
+                });
+                suggestionsBox.appendChild(div);
+            });
+            
+            suggestionsBox.classList.add('show');
+        }
+
+        // Hide all suggestions
+        function hideSuggestions() {
+            fromSuggestions.classList.remove('show');
+            toSuggestions.classList.remove('show');
+        }
+
+        // Validate if region is valid (in our database or contains Saudi keywords)
+        function validateSaudiRegion(region) {
+            if (!region || region.trim() === '') return false;
+            
+            const regionLower = region.toLowerCase();
+            
+            // Check if region is in our database
+            if (saudiRegions.some(r => r.toLowerCase() === regionLower)) {
+                return true;
+            }
+            
+            // Check for common Saudi keywords
+            const saudiKeywords = [
+                'السعودية', 'saudi', 'المملكة', 'الرياض', 'جدة', 'الدمام',
+                'مكة', 'المدينة', 'الشرقية', 'الغربية', 'الشمالية', 'الجنوبية'
+            ];
+            
+            return saudiKeywords.some(keyword => regionLower.includes(keyword.toLowerCase()));
+        }
+
+        // Toggle between light and dark themes
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            
+            // Update theme icon
+            themeIcon.textContent = isDarkMode ? '☀️' : '🌙';
+            
+            // Save theme preference
+            localStorage.setItem('fuelCalculatorTheme', isDarkMode ? 'dark' : 'light');
+        }
+
+        // Toggle between Arabic and English
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+            
+            // Update HTML direction
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLanguage;
+            
+            // Update all text elements
+            updateLanguage();
+            
+            // Update language icon
+            languageIcon.textContent = currentLanguage === 'ar' ? '🇸🇦' : '🇬🇧';
+            
+            // Save language preference
+            localStorage.setItem('fuelCalculatorLanguage', currentLanguage);
+        }
+
+        // Update all text elements based on current language
+        function updateLanguage() {
+            const t = translations[currentLanguage];
+            
+            // Update UI elements
+            document.getElementById('main-title').textContent = t.title;
+            document.getElementById('inputs-title').textContent = t.inputsTitle;
+            document.getElementById('from-label').textContent = t.fromLabel;
+            document.getElementById('from-region').placeholder = t.fromPlaceholder;
+            document.getElementById('to-label').textContent = t.toLabel;
+            document.getElementById('to-region').placeholder = t.toPlaceholder;
+            document.getElementById('fuel-type-label').textContent = t.fuelTypeLabel;
+            document.getElementById('fuel-price-label').textContent = t.fuelPriceLabel;
+            document.getElementById('default-price-label').textContent = t.defaultPriceLabel;
+            document.getElementById('consumption-label').textContent = t.consumptionLabel;
+            document.getElementById('calculate-text').textContent = t.calculateBtn;
+            document.getElementById('results-title').textContent = t.resultsTitle;
+            document.getElementById('total-distance-label').textContent = t.totalDistanceLabel;
+            document.getElementById('fuel-needed-label').textContent = t.fuelNeededLabel;
+            document.getElementById('extra-cost-label').textContent = t.extraCostLabel;
+            document.getElementById('currency').textContent = t.currency;
+            document.getElementById('loading-text').textContent = t.loadingText;
+            document.getElementById('footer-text').textContent = t.footerText;
+            
+            // Update fuel type options
+            document.querySelector('option[value="diesel"]').textContent = t.diesel;
+            document.querySelector('option[value="gasoline91"]').textContent = t.gasoline91;
+            document.querySelector('option[value="gasoline95"]').textContent = t.gasoline95;
+            
+            // Update modal
+            document.getElementById('modal-title').textContent = t.modalTitle;
+            passwordInput.placeholder = t.passwordPlaceholder;
+            modalCancel.textContent = t.cancelBtn;
+            modalConfirm.textContent = t.confirmBtn;
+            
+            // Update units in results
+            document.querySelectorAll('.result-unit').forEach(unit => {
+                if (unit.textContent.includes('كم') || unit.textContent.includes('km')) {
+                    unit.textContent = t.km;
+                } else if (unit.textContent.includes('لتر') || unit.textContent.includes('L')) {
+                    unit.textContent = t.liter;
+                }
+            });
+            
+            // Update lock button text if needed
+            consumptionLockBtn.textContent = isConsumptionLocked ? '🔒' : '🔓';
+        }
+
+        // Handle fuel type change
+        function handleFuelTypeChange() {
+            updateFuelPrice();
+            updateConsumption();
+        }
+
+        // Update fuel price based on selected fuel type
+        function updateFuelPrice() {
+            if (useDefaultPriceCheckbox.checked) {
+                const fuelType = fuelTypeSelect.value;
+                fuelPriceInput.value = defaultFuelPrices[fuelType];
+            }
+        }
+
+        // Update consumption based on selected fuel type
+        function updateConsumption() {
+            const fuelType = fuelTypeSelect.value;
+            fuelConsumptionInput.value = defaultConsumptions[fuelType];
+            
+            // Reset error
+            consumptionError.classList.remove('show');
+            consumptionError.textContent = '';
+        }
+
+        // Validate consumption value based on fuel type
+        function validateConsumption() {
+            const consumption = parseFloat(fuelConsumptionInput.value);
+            const fuelType = fuelTypeSelect.value;
+            
+            if (fuelType === 'diesel') {
+                if (consumption < 10 || consumption > 13) {
+                    consumptionError.textContent = translations[currentLanguage].errorConsumptionRange;
+                    consumptionError.classList.add('show');
+                    return false;
+                }
+            } else {
+                if (consumption !== 18) {
+                    consumptionError.textContent = translations[currentLanguage].errorConsumptionGasoline;
+                    consumptionError.classList.add('show');
+                    return false;
+                }
+            }
+            
+            consumptionError.classList.remove('show');
+            return true;
+        }
+
+        // Toggle fuel price input between editable and fixed
+        function toggleFuelPriceInput() {
+            fuelPriceInput.disabled = useDefaultPriceCheckbox.checked;
+            if (useDefaultPriceCheckbox.checked) {
+                updateFuelPrice();
+            }
+        }
+
+        // Toggle consumption lock
+        function toggleConsumptionLock() {
+            if (isConsumptionLocked) {
+                // Show password modal to unlock
+                openPasswordModal();
+            } else {
+                // Lock the consumption field
+                lockConsumption();
+            }
+        }
+
+        // Open password modal
+        function openPasswordModal() {
+            passwordModal.classList.add('active');
+            passwordInput.value = '';
+            passwordError.classList.remove('show');
+            passwordInput.focus();
+        }
+
+        // Close password modal
+        function closePasswordModal() {
+            passwordModal.classList.remove('active');
+            passwordInput.value = '';
+            passwordError.classList.remove('show');
+        }
+
+        // Verify password
+        function verifyPassword() {
+            const enteredPassword = passwordInput.value;
+            
+            if (enteredPassword === CONSUMPTION_PASSWORD) {
+                // Correct password - unlock consumption
+                unlockConsumption();
+                closePasswordModal();
+            } else {
+                // Incorrect password - show error
+                passwordError.textContent = translations[currentLanguage].errorPassword;
+                passwordError.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+
+        // Unlock consumption field
+        function unlockConsumption() {
+            isConsumptionLocked = false;
+            fuelConsumptionInput.disabled = false;
+            consumptionLockBtn.textContent = '🔓';
+            consumptionLockBtn.classList.add('unlocked');
+            fuelConsumptionInput.focus();
+        }
+
+        // Lock consumption field
+        function lockConsumption() {
+            isConsumptionLocked = true;
+            fuelConsumptionInput.disabled = true;
+            consumptionLockBtn.textContent = '🔒';
+            consumptionLockBtn.classList.remove('unlocked');
+            updateConsumption(); // Reset to default value
+        }
+
+        // Calculate distance between regions
+        async function calculateDistance(origin, destination) {
+            // First, validate both regions are Saudi regions
+            if (!validateSaudiRegion(origin) || !validateSaudiRegion(destination)) {
+                throw new Error(translations[currentLanguage].errorInvalidRegion);
+            }
+            
+            // Clean region names for matching
+            const cleanOrigin = origin.trim();
+            const cleanDestination = destination.trim();
+            
+            // Check for direct distance in our database
+            const key1 = `${cleanOrigin}-${cleanDestination}`;
+            const key2 = `${cleanDestination}-${cleanOrigin}`;
+            
+            if (cityDistances[key1]) {
+                return cityDistances[key1];
+            } else if (cityDistances[key2]) {
+                return cityDistances[key2];
+            }
+            
+            // If not found, calculate approximate distance based on region type
+            // For simplicity, we'll use average distances based on region categories
+            
+            // Check if regions are in same city or nearby
+            const mainCities = ['الرياض', 'جدة', 'الدمام', 'مكة المكرمة', 'المدينة المنورة'];
+            const originCity = mainCities.find(city => cleanOrigin.includes(city));
+            const destCity = mainCities.find(city => cleanDestination.includes(city));
+            
+            if (originCity && destCity) {
+                if (originCity === destCity) {
+                    // Within same city
+                    return 20 + Math.random() * 30; // 20-50 km within city
+                } else {
+                    // Between major cities, use average distances
+                    const interCityDistances = {
+                        'الرياض-جدة': 950, 'الرياض-الدمام': 395, 'الرياض-مكة المكرمة': 880,
+                        'الرياض-المدينة المنورة': 850, 'جدة-الدمام': 1345, 'جدة-المدينة المنورة': 420,
+                        'الدمام-المدينة المنورة': 1420, 'مكة المكرمة-المدينة المنورة': 420
+                    };
+                    
+                    const key = `${originCity}-${destCity}`;
+                    const reverseKey = `${destCity}-${originCity}`;
+                    
+                    if (interCityDistances[key]) return interCityDistances[key];
+                    if (interCityDistances[reverseKey]) return interCityDistances[reverseKey];
+                }
+            }
+            
+            // Default distance for other regions
+            // Calculate based on first character (rough geographical grouping)
+            const getRegionGroup = (region) => {
+                if (region.startsWith('الر') || region.includes('رياض')) return 'center';
+                if (region.startsWith('ج') || region.includes('مكة') || region.includes('طائف')) return 'west';
+                if (region.startsWith('الدم') || region.includes('شرقية') || region.includes('خبر')) return 'east';
+                if (region.includes('مدينة') || region.includes('ينبع')) return 'north_west';
+                if (region.startsWith('أب') || region.includes('جازان') || region.includes('نجران')) return 'south';
+                if (region.includes('حائل') || region.includes('تبوك') || region.includes('عرعر')) return 'north';
+                return 'other';
+            };
+            
+            const originGroup = getRegionGroup(cleanOrigin);
+            const destGroup = getRegionGroup(cleanDestination);
+            
+            // Define average distances between groups
+            const groupDistances = {
+                'center-west': 850,
+                'center-east': 400,
+                'center-north_west': 850,
+                'center-south': 950,
+                'center-north': 650,
+                'west-east': 1350,
+                'west-north_west': 420,
+                'west-south': 650,
+                'west-north': 1100,
+                'east-north_west': 1420,
+                'east-south': 1200,
+                'east-north': 1050,
+                'north_west-south': 1000,
+                'north_west-north': 650,
+                'south-north': 1300
+            };
+            
+            const groupKey = `${originGroup}-${destGroup}`;
+            const reverseGroupKey = `${destGroup}-${originGroup}`;
+            
+            if (groupDistances[groupKey]) return groupDistances[groupKey];
+            if (groupDistances[reverseGroupKey]) return groupDistances[reverseGroupKey];
+            
+            // Fallback: random distance between 100-800 km
+            return 100 + Math.random() * 700;
+        }
+
+        // Calculate extra fuel cost
+        async function calculateCost() {
+            const fromRegion = fromRegionInput.value.trim();
+            const toRegion = toRegionInput.value.trim();
+            
+            // Validate inputs
+            if (!fromRegion || !toRegion) {
+                alert(translations[currentLanguage].errorRegion);
+                return;
+            }
+            
+            // Validate consumption if unlocked
+            if (!isConsumptionLocked && !validateConsumption()) {
+                return;
+            }
+            
+            // Show loading state
+            loadingElement.style.display = 'block';
+            calculateBtn.disabled = true;
+            
+            try {
+                // Calculate distance between regions
+                const distance = await calculateDistance(fromRegion, toRegion);
+                
+                // Add 10 km extra as per requirement (hidden from user but calculated)
+                const totalDistance = distance + 10;
+                
+                // Get input values
+                const fuelConsumption = parseFloat(fuelConsumptionInput.value);
+                const fuelPrice = parseFloat(fuelPriceInput.value);
+                
+                // Calculate fuel needed and extra cost
+                const fuelNeeded = totalDistance / fuelConsumption;
+                const extraCost = fuelNeeded * fuelPrice;
+                
+                // Display results (show only the actual distance, not the total with extra)
+                document.getElementById('total-distance').textContent = distance.toFixed(0);
+                document.getElementById('fuel-needed').textContent = fuelNeeded.toFixed(1);
+                document.getElementById('extra-cost').textContent = extraCost.toFixed(2);
+                
+                // Log calculation to Firebase
+                logCalculationToFirebase(fromRegion, toRegion, distance, fuelNeeded, extraCost);
+                
+            } catch (error) {
+                console.error('Calculation error:', error);
+                alert(error.message || translations[currentLanguage].errorDistance);
+                
+                // Fallback calculation using estimated distance
+                const estimatedDistance = 300; // km
+                const totalDistance = estimatedDistance + 10; // Add hidden 10 km
+                
+                // Get input values
+                const fuelConsumption = parseFloat(fuelConsumptionInput.value);
+                const fuelPrice = parseFloat(fuelPriceInput.value);
+                
+                // Calculate fuel needed and extra cost
+                const fuelNeeded = totalDistance / fuelConsumption;
+                const extraCost = fuelNeeded * fuelPrice;
+                
+                // Display results
+                document.getElementById('total-distance').textContent = estimatedDistance.toFixed(0);
+                document.getElementById('fuel-needed').textContent = fuelNeeded.toFixed(1);
+                document.getElementById('extra-cost').textContent = extraCost.toFixed(2);
+            } finally {
+                // Hide loading state
+                loadingElement.style.display = 'none';
+                calculateBtn.disabled = false;
+            }
+        }
+
+        // Log calculation to Firebase
+        function logCalculationToFirebase(fromRegion, toRegion, distance, fuelNeeded, extraCost) {
+            try {
+                const database = firebase.database();
+                const timestamp = new Date().toISOString();
+                
+                const calculationData = {
+                    fromRegion,
+                    toRegion,
+                    distance,
+                    extraDistance: 10, // Always add 10 km (hidden from user)
+                    totalDistance: distance + 10,
+                    fuelType: fuelTypeSelect.value,
+                    fuelPrice: parseFloat(fuelPriceInput.value),
+                    fuelConsumption: parseFloat(fuelConsumptionInput.value),
+                    fuelNeeded,
+                    extraCost,
+                    timestamp,
+                    language: currentLanguage,
+                    theme: isDarkMode ? 'dark' : 'light',
+                    consumptionLocked: isConsumptionLocked
+                };
+                
+                database.ref('calculations').push(calculationData)
+                    .then(() => console.log('Calculation logged to Firebase'))
+                    .catch(error => console.error('Firebase logging error:', error));
+            } catch (error) {
+                console.error('Firebase logging error:', error);
+            }
+        }
+
+        // Apply saved preferences from localStorage
+        function applySavedPreferences() {
+            // Apply saved theme
+            const savedTheme = localStorage.getItem('fuelCalculatorTheme');
+            if (savedTheme === 'dark') {
+                isDarkMode = true;
+                document.body.classList.add('dark-mode');
+                themeIcon.textContent = '☀️';
+            }
+            
+            // Apply saved language
+            const savedLanguage = localStorage.getItem('fuelCalculatorLanguage');
+            if (savedLanguage && (savedLanguage === 'ar' || savedLanguage === 'en')) {
+                currentLanguage = savedLanguage;
+                document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+                document.documentElement.lang = currentLanguage;
+                languageIcon.textContent = currentLanguage === 'ar' ? '🇸🇦' : '🇬🇧';
+                updateLanguage();
+            }
+            
+            // Apply saved fuel price preference
+            const savedUseDefaultPrice = localStorage.getItem('fuelCalculatorUseDefaultPrice');
+            if (savedUseDefaultPrice !== null) {
+                useDefaultPriceCheckbox.checked = savedUseDefaultPrice === 'true';
+                toggleFuelPriceInput();
+            }
+            
+            // Apply saved consumption lock state
+            const savedConsumptionLocked = localStorage.getItem('fuelCalculatorConsumptionLocked');
+            if (savedConsumptionLocked !== null) {
+                isConsumptionLocked = savedConsumptionLocked === 'true';
+                if (!isConsumptionLocked) {
+                    unlockConsumption();
+                }
+            }
+        }
+
+        // Save preferences to localStorage when they change
+        function setupPreferenceSaving() {
+            useDefaultPriceCheckbox.addEventListener('change', function() {
+                localStorage.setItem('fuelCalculatorUseDefaultPrice', this.checked);
+            });
+            
+            // Save consumption lock state
+            window.addEventListener('beforeunload', function() {
+                localStorage.setItem('fuelCalculatorConsumptionLocked', isConsumptionLocked);
+            });
+        }
+
+        // Initialize when DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initCalculator();
+            setupPreferenceSaving();
+        });
+    </script>
+</body>
+</html>
