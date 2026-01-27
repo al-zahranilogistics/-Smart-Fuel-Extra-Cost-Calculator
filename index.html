@@ -608,7 +608,7 @@
                 <div class="form-group">
                     <label class="form-label" id="fuel-price-label">سعر الوقود (لكل لتر)</label>
                     <div class="fuel-price-group">
-                        <input type="number" id="fuel-price" class="form-control fuel-price-input" step="0.01" min="0.5" max="10" value="2.33">
+                        <input type="number" id="fuel-price" class="form-control fuel-price-input" step="0.01" min="0.5" max="10" value="0.88">
                         <span id="currency">SAR</span>
                     </div>
                     <div class="toggle-container">
@@ -623,7 +623,7 @@
                 <div class="form-group">
                     <label for="fuel-consumption" class="form-label" id="consumption-label">متوسط استهلاك المركبة (كم/لتر)</label>
                     <div class="consumption-control">
-                        <input type="number" id="fuel-consumption" class="form-control" step="0.1" min="1" max="50" value="11.5" disabled>
+                        <input type="number" id="fuel-consumption" class="form-control" step="0.1" min="1" max="50" value="10" disabled>
                         <button class="lock-btn" id="consumption-lock">🔒</button>
                     </div>
                     <div class="error-message" id="consumption-error"></div>
@@ -712,16 +712,16 @@
         let isDarkMode = false;
         let isConsumptionLocked = true;
         
-        // Default fuel prices in Saudi Arabia
+        // Default fuel prices in Saudi Arabia - UPDATED
         const defaultFuelPrices = {
-            'diesel': 2.33, // SAR per liter
-            'gasoline91': 2.18, // SAR per liter
-            'gasoline95': 2.33 // SAR per liter
+            'diesel': 0.88, // SAR per liter - UPDATED from 2.33 to 0.88
+            'gasoline91': 2.18, // SAR per liter - UPDATED from 2.18 (stays same)
+            'gasoline95': 2.33 // SAR per liter - UPDATED from 2.33 (stays same)
         };
         
-        // Default consumption values
+        // Default consumption values - UPDATED to fixed values
         const defaultConsumptions = {
-            'diesel': 11.5, // Average of 10-13 km/liter
+            'diesel': 10, // Fixed at 10 km/liter - UPDATED from 11.5 to 10
             'gasoline91': 18, // Fixed at 18 km/liter
             'gasoline95': 18  // Fixed at 18 km/liter
         };
@@ -840,9 +840,8 @@
                 errorDistance: "تعذر حساب المسافة بين المناطق المحددة. يرجى التأكد من صحة المناطق المدخلة",
                 errorApi: "خطأ في الاتصال بخدمة الحساب",
                 errorPassword: "كلمة المرور غير صحيحة",
-                errorConsumptionRange: "قيمة استهلاك الديزل يجب أن تكون بين 10 و 13 كم/لتر",
-                errorConsumptionGasoline: "قيمة استهلاك البنزين يجب أن تكون 18 كم/لتر",
-                errorInvalidRegion: "يرجى إدخال مناطق سعودية صحيحة"
+                errorConsumptionDiesel: "قيمة استهلاك الديزل ثابتة عند 10 كم/لتر",
+                errorConsumptionGasoline: "قيمة استهلاك البنزين ثابتة عند 18 كم/لتر"
             },
             en: {
                 title: "Alzahrani Petroleum - Smart Fuel Extra Cost Calculator",
@@ -882,9 +881,8 @@
                 errorDistance: "Unable to calculate distance between selected regions. Please verify the regions entered",
                 errorApi: "Error connecting to calculation service",
                 errorPassword: "Incorrect password",
-                errorConsumptionRange: "Diesel consumption must be between 10 and 13 km/liter",
-                errorConsumptionGasoline: "Gasoline consumption must be 18 km/liter",
-                errorInvalidRegion: "Please enter valid Saudi regions"
+                errorConsumptionDiesel: "Diesel consumption is fixed at 10 km/liter",
+                errorConsumptionGasoline: "Gasoline consumption is fixed at 18 km/liter"
             }
         };
 
@@ -1150,14 +1148,14 @@
             consumptionError.textContent = '';
         }
 
-        // Validate consumption value based on fuel type
+        // Validate consumption value based on fuel type - UPDATED to fixed values
         function validateConsumption() {
             const consumption = parseFloat(fuelConsumptionInput.value);
             const fuelType = fuelTypeSelect.value;
             
             if (fuelType === 'diesel') {
-                if (consumption < 10 || consumption > 13) {
-                    consumptionError.textContent = translations[currentLanguage].errorConsumptionRange;
+                if (consumption !== 10) {
+                    consumptionError.textContent = translations[currentLanguage].errorConsumptionDiesel;
                     consumptionError.classList.add('show');
                     return false;
                 }
@@ -1246,7 +1244,7 @@
         async function calculateDistance(origin, destination) {
             // First, validate both regions are Saudi regions
             if (!validateSaudiRegion(origin) || !validateSaudiRegion(destination)) {
-                throw new Error(translations[currentLanguage].errorInvalidRegion);
+                throw new Error(translations[currentLanguage].errorRegion);
             }
             
             // Clean region names for matching
