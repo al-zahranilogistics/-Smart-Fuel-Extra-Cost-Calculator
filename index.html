@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الزهراني بترول - آلة حاسبة لتكلفة الوقود الإضافية</title>
+    <title>الزهراني بترول - نظام حساب تكلفة الوقود الإضافية</title>
     <link rel="icon" href="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/dOqNLp8LNNTl7Vlk/alzahrani-logistics-corporate-logo-photoroom-AR03Qav69VTGKk9B.png">
     
     <!-- Import Firebase -->
@@ -58,7 +58,7 @@
 
         /* Layout */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -83,6 +83,7 @@
             height: 60px;
             width: auto;
             border-radius: 8px;
+            cursor: pointer;
         }
 
         .header h1 {
@@ -224,7 +225,7 @@
             color: white;
         }
 
-        /* Password Modal */
+        /* Hidden Admin Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -232,8 +233,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
             align-items: center;
             justify-content: center;
         }
@@ -247,7 +248,7 @@
             border-radius: var(--radius);
             padding: 30px;
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             box-shadow: var(--shadow-hover);
         }
 
@@ -267,9 +268,6 @@
             background: var(--background-color);
             color: var(--text-color);
             font-size: 1rem;
-            text-align: center;
-            letter-spacing: 3px;
-            font-family: monospace;
         }
 
         .modal-buttons {
@@ -441,6 +439,11 @@
             transform: translateY(0);
         }
 
+        /* Hidden Admin Elements */
+        .hidden-admin-btn {
+            display: none !important;
+        }
+
         /* Footer */
         .footer {
             text-align: center;
@@ -554,15 +557,357 @@
         .region-input-container {
             position: relative;
         }
+        
+        /* Login Timer */
+        .login-timer {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .login-timer span {
+            color: #ea4335;
+        }
+        
+        /* Dashboard Styles */
+        .dashboard-container {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .dashboard-container.active {
+            display: block;
+        }
+        
+        .requests-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .requests-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .requests-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .requests-table tr:hover {
+            background: rgba(26, 115, 232, 0.05);
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn {
+            background: var(--surface-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .back-btn:hover {
+            background: var(--border-color);
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Logout Button */
+        .logout-btn {
+            background: #ea4335;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .logout-btn:hover {
+            background: #c62828;
+        }
+        
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+        }
+        
+        .user-icon {
+            background: var(--primary-color);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* Registration Form */
+        .register-form {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .register-link {
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .register-link:hover {
+            text-decoration: none;
+        }
+        
+        /* Success Message */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .admin-panel.active {
+            display: block;
+        }
+        
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Filter Controls */
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--background-color);
+            color: var(--text-color);
+            min-width: 150px;
+        }
+        
+        /* Plate Number Input Hint */
+        .plate-hint {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            display: block;
+        }
+        
+        /* Auto Login Timer */
+        .auto-login-timer {
+            text-align: center;
+            padding: 15px;
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .auto-login-timer span {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* Login Form Styling Fix */
+        .login-form-group {
+            margin-bottom: 15px;
+        }
+        
+        .login-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        /* Test Account Box */
+        .test-account-box {
+            background: #f0f7ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .test-account-box h4 {
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        
+        .test-account-box p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #5f6368;
+        }
+        
+        /* Quick Test Button */
+        .quick-test-btn {
+            background: #34a853;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin: 5px;
+            transition: var(--transition);
+        }
+        
+        .quick-test-btn:hover {
+            background: #2e7d32;
+        }
+        
+        /* Hidden Admin Login Secret */
+        .secret-access-text {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        /* Logo click counter */
+        .logo-click-counter {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Hidden Admin Login Modal (Accessible via secret click sequence) -->
+    <div class="modal-overlay" id="admin-login-modal">
+        <div class="modal">
+            <h3 class="modal-title" id="admin-login-title">تسجيل دخول المسؤول</h3>
+            
+            <div class="login-form-group">
+                <label for="admin-username" class="login-label">اسم المستخدم</label>
+                <input type="text" id="admin-username" class="modal-input" placeholder="أدخل اسم المستخدم">
+            </div>
+            
+            <div class="login-form-group">
+                <label for="admin-password" class="login-label">كلمة المرور</label>
+                <input type="password" id="admin-password" class="modal-input" placeholder="أدخل كلمة المرور">
+            </div>
+            
+            <div class="error-message" id="admin-login-error" style="display: none;"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-cancel" id="admin-login-cancel">إلغاء</button>
+                <button class="modal-btn modal-confirm" id="admin-login-confirm">تسجيل الدخول</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="main-container">
         <!-- Header -->
         <header class="header">
             <div class="logo-container">
-                <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/dOqNLp8LNNTl7Vlk/alzahrani-logistics-corporate-logo-photoroom-AR03Qav69VTGKk9B.png" alt="شعار الزهراني بترول" class="logo">
-                <h1 id="main-title">الزهراني بترول - آلة حاسبة لتكلفة الوقود الإضافية</h1>
+                <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/dOqNLp8LNNTl7Vlk/alzahrani-logistics-corporate-logo-photoroom-AR03Qav69VTGKk9B.png" 
+                     alt="شعار الزهراني بترول" 
+                     class="logo"
+                     id="logo-clickable">
+                <h1 id="main-title">الزهراني بترول - نظام حساب تكلفة الوقود الإضافية</h1>
             </div>
             <div class="header-controls">
                 <button class="control-btn" id="theme-toggle" title="تبديل الوضع">
@@ -571,14 +916,29 @@
                 <button class="control-btn" id="language-toggle" title="تغيير اللغة">
                     <span id="language-icon">🇸🇦</span>
                 </button>
+                <!-- Hidden Admin Panel Button (shown only after admin login) -->
+                <button class="control-btn hidden-admin-btn" id="admin-panel-btn" title="لوحة المسؤول">
+                    <span>👑</span>
+                </button>
             </div>
         </header>
 
         <!-- Calculator -->
-        <main class="calculator-container">
+        <main class="calculator-container" id="calculator-section">
             <!-- Inputs Card -->
             <div class="card">
                 <h2 class="card-title" id="inputs-title">🔧 المدخلات</h2>
+                
+                <div class="form-group">
+                    <label for="plate-number" class="form-label" id="plate-label">رقم اللوحة</label>
+                    <input type="text" id="plate-number" class="form-control" placeholder="مثال: ABC123 أو 123ABC" style="text-transform: uppercase;">
+                    <span class="plate-hint" id="plate-hint">أرقام وحروف إنجليزية كابيتل فقط (مثال: ABC123 أو 123ABC)</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-name" class="form-label" id="project-label">اسم المشروع</label>
+                    <input type="text" id="project-name" class="form-control" placeholder="أدخل اسم المشروع">
+                </div>
                 
                 <div class="form-group">
                     <label for="from-region" class="form-label" id="from-label">منطقة البداية</label>
@@ -608,7 +968,7 @@
                 <div class="form-group">
                     <label class="form-label" id="fuel-price-label">سعر الوقود (لكل لتر)</label>
                     <div class="fuel-price-group">
-                        <input type="number" id="fuel-price" class="form-control fuel-price-input" step="0.01" min="0.5" max="10" value="0.88">
+                        <input type="number" id="fuel-price" class="form-control fuel-price-input" step="0.01" min="0.5" max="10" value="1.88">
                         <span id="currency">SAR</span>
                     </div>
                     <div class="toggle-container">
@@ -666,12 +1026,126 @@
             </div>
         </main>
         
+        <!-- Admin Panel Section (hidden by default) -->
+        <div class="admin-panel" id="admin-panel-section">
+            <div class="dashboard-header">
+                <h2 class="card-title">👑 لوحة تحكم المسؤول - النظام الإداري</h2>
+                <button class="back-btn" id="back-to-calc">
+                    <span>↩</span>
+                    <span>العودة للآلة الحاسبة</span>
+                </button>
+                <!-- Hidden Logout Button (shown only for admin) -->
+                <button class="logout-btn hidden-admin-btn" id="logout-btn">
+                    <span>🚪</span>
+                    <span>تسجيل الخروج</span>
+                </button>
+            </div>
+            
+            <!-- Admin Stats -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-requests">0</div>
+                    <div class="stat-label">إجمالي الطلبات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="pending-requests">0</div>
+                    <div class="stat-label">طلبات قيد الانتظار</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-fuel">0</div>
+                    <div class="stat-label">إجمالي الوقود (لتر)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-cost">0</div>
+                    <div class="stat-label">إجمالي التكلفة (ر.س)</div>
+                </div>
+            </div>
+            
+            <!-- Filter Controls -->
+            <div class="filter-controls">
+                <select class="filter-select" id="filter-status">
+                    <option value="all">جميع الحالات</option>
+                    <option value="pending">قيد الانتظار</option>
+                    <option value="approved">معتمدة</option>
+                    <option value="rejected">مرفوضة</option>
+                </select>
+                
+                <select class="filter-select" id="filter-fuel-type">
+                    <option value="all">جميع أنواع الوقود</option>
+                    <option value="diesel">ديزل</option>
+                    <option value="gasoline91">بنزين 91</option>
+                    <option value="gasoline95">بنزين 95</option>
+                </select>
+                
+                <input type="text" id="admin-search-filter" class="form-control" placeholder="ابحث برقم اللوحة، المشروع، أو المشرف..." style="flex: 1;">
+            </div>
+            
+            <!-- Supervisors Management -->
+            <div class="card" style="margin-bottom: 30px;">
+                <h3 class="card-title">👥 إدارة المشرفين</h3>
+                <div class="loading" id="supervisors-loading">
+                    <div class="spinner"></div>
+                    <p>جاري تحميل بيانات المشرفين...</p>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="requests-table" id="supervisors-table">
+                        <thead>
+                            <tr>
+                                <th>اسم المستخدم</th>
+                                <th>اسم العرض</th>
+                                <th>تاريخ التسجيل</th>
+                                <th>الحالة</th>
+                                <th>عدد الطلبات</th>
+                                <th>آخر دخول</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="supervisors-body">
+                            <!-- بيانات المشرفين ستضاف هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Requests Table -->
+            <div class="card">
+                <h3 class="card-title">📋 جميع طلبات الوقود</h3>
+                <div class="loading" id="admin-dashboard-loading">
+                    <div class="spinner"></div>
+                    <p id="admin-dashboard-loading-text">جاري تحميل البيانات...</p>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="requests-table" id="admin-requests-table">
+                        <thead>
+                            <tr>
+                                <th>رقم اللوحة</th>
+                                <th>المشروع</th>
+                                <th>منطقة البداية</th>
+                                <th>منطقة النهاية</th>
+                                <th>المسافة (كم)</th>
+                                <th>نوع الوقود</th>
+                                <th>الكمية (لتر)</th>
+                                <th>التكلفة (ر.س)</th>
+                                <th>المشرف</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-requests-body">
+                            <!-- البيانات ستضاف هنا عبر JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
         <div class="footer">
             <p id="footer-text">© 2025 الزهراني بترول. جميع الحقوق محفوظة.</p>
         </div>
     </div>
 
-    <!-- Password Modal -->
+    <!-- Password Modal (for consumption lock) -->
     <div class="modal-overlay" id="password-modal">
         <div class="modal">
             <h3 class="modal-title" id="modal-title">إدخال كلمة المرور</h3>
@@ -697,114 +1171,107 @@
         };
 
         // Initialize Firebase
+        let firebaseApp, database;
         try {
-            firebase.initializeApp(firebaseConfig);
+            firebaseApp = firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
             console.log("Firebase initialized successfully");
         } catch (error) {
             console.error("Firebase initialization error:", error);
         }
 
-        // Password for consumption field
+        // Passwords
         const CONSUMPTION_PASSWORD = "0906";
+        const ADMIN_PASSWORD = "0906"; // Password that you keep in your head
         
         // Language and Theme Management
         let currentLanguage = 'ar';
         let isDarkMode = false;
         let isConsumptionLocked = true;
+        let currentUser = null;
+        let isAdmin = false;
+        let logoClickCount = 0;
+        let logoClickTimer = null;
+        const LOGO_CLICK_SECRET = 5; // 5 clicks to reveal admin login
+        const LOGO_CLICK_TIMEOUT = 3000; // 3 seconds to complete 5 clicks
         
-        // Default fuel prices in Saudi Arabia - UPDATED
+        // Default fuel prices in Saudi Arabia
         const defaultFuelPrices = {
-            'diesel': 0.88, // SAR per liter - UPDATED from 2.33 to 0.88
-            'gasoline91': 2.18, // SAR per liter - UPDATED from 2.18 (stays same)
-            'gasoline95': 2.33 // SAR per liter - UPDATED from 2.33 (stays same)
+            'diesel': 1.88, // SAR per liter
+            'gasoline91': 2.18, // SAR per liter
+            'gasoline95': 2.33 // SAR per liter
         };
         
-        // Default consumption values - UPDATED to fixed values
+        // Default consumption values
         const defaultConsumptions = {
-            'diesel': 10, // Fixed at 10 km/liter - UPDATED from 11.5 to 10
+            'diesel': 10, // Fixed at 10 km/liter
             'gasoline91': 18, // Fixed at 18 km/liter
             'gasoline95': 18  // Fixed at 18 km/liter
         };
 
-        // Saudi Regions Database - 50+ مناطق سعودية (مدن، أرياف، أحياء، قرى)
+        // Saudi Regions Database
         const saudiRegions = [
-            // المدن الرئيسية
             "الرياض", "جدة", "الدمام", "مكة المكرمة", "المدينة المنورة",
             "الطائف", "الخبر", "الظهران", "الجبيل", "ينبع",
             "تبوك", "أبها", "حائل", "بريدة", "سكاكا",
             "عرعر", "نجران", "جازان", "الباحة", "الخرج",
-            
-            // مناطق وأرياف الرياض
-            "ضرما", "المزاحمية", "حوطة بني تميم", "الحريق", "الثمامة",
-            "الدرعية", "العيينة", "الملقا", "العريجا", "شقراء",
-            "الدوادمي", "الغاط", "الزلفي", "وادي الدواسر", "السليل",
-            
-            // مناطق وأرياف مكة
-            "القنفذة", "الليث", "رابغ", "خليص", "الجموم",
-            "الكامل", "الخرمة", "تربة", "المويه", "مهد الذهب",
-            
-            // مناطق وأرياف المدينة
-            "العلا", "خيبر", "المهد", "الحناكية", "بدر",
-            "ينبع البحر", "ينبع النخل", "العيص", "الوجه", "ضباء",
-            
-            // مناطق وأرياف الشرقية
-            "الأحساء", "القطيف", "بقيق", "قرية العليا", "النعيرية",
-            "العديد", "صفوى", "تاروت", "الجبيل الصناعية", "الخفجي",
-            
-            // مناطق وأرياف الجنوب
-            "شرورة", "الخرخير", "طريف", "الوديعة", "صبيا",
-            "أحد المسارحة", "أبو عريش", "صامطة", "بيش", "ضمد",
-            
-            // أحياء الرياض
-            "الملز", "النسيم", "الشميسي", "العليا", "المرسلات",
-            "الربوة", "العقيق", "الغدير", "اليرموك", "الازدهار",
-            
-            // أحياء جدة
-            "النور", "الروضة", "النسيم", "السلامة", "الزهراء",
-            "الشرائع", "الكورنيش", "الندى", "المنتزه", "الفيحاء",
-            
-            // قرى وهجر
-            "حرض", "الخوبة", "العارض", "الطرف", "الأوجلة"
+            "الأحساء", "خميس مشيط", "حفر الباطن", "ضرما", "المزاحمية",
+            "حوطة بني تميم", "الحريق", "الثمامة", "الدرعية", "العيينة",
+            "الملقا", "العريجا", "شقراء", "الدوادمي", "الغاط",
+            "الزلفي", "وادي الدواسر", "السليل", "القنفذة", "الليث",
+            "رابغ", "خليص", "الجموم", "الكامل", "الخرمة",
+            "تربة", "المويه", "مهد الذهب", "العلا", "خيبر",
+            "المهد", "الحناكية", "بدر", "ينبع البحر", "ينبع النخل",
+            "العيص", "الوجه", "ضباء", "القطيف", "بقيق",
+            "قرية العليا", "النعيرية", "العديد", "صفوى", "تاروت",
+            "الجبيل الصناعية", "الخفجي", "شرورة", "الخرخير", "طريف",
+            "الوديعة", "صبيا", "أحد المسارحة", "أبو عريش", "صامطة",
+            "بيش", "ضمد", "الملز", "النسيم", "الشميسي",
+            "العليا", "المرسلات", "الربوة", "العقيق", "الغدير",
+            "اليرموك", "الازدهار", "النور", "الروضة", "السلامة",
+            "الزهراء", "الشرائع", "الكورنيش", "الندى", "المنتزه",
+            "الفيحاء", "حرض", "الخوبة", "العارض", "الطرف", "الأوجلة"
         ];
 
         // مسافات تقريبية بين المدن الرئيسية (بالكيلومتر)
         const cityDistances = {
-            // الرياض إلى
             'الرياض-جدة': 950, 'الرياض-الدمام': 395, 'الرياض-مكة المكرمة': 880,
-            'الرياض-المدينة المنورة': 850, 'الرياض-الطائف': 780, 'الرياض-أبها': 950,
+            'الرياض-المدينة المنورة': 850, 'الرياض-الطائف': 780, 'الرياض-أبها': 1060,
             'الرياض-بريدة': 330, 'الرياض-حائل': 640, 'الرياض-تبوك': 1150,
             'الرياض-جازان': 1250, 'الرياض-نجران': 950, 'الرياض-الخرج': 85,
-            
-            // جدة إلى
+            'الرياض-الأحساء': 320, 'الرياض-خميس مشيط': 1040, 'الرياض-حفر الباطن': 500,
             'جدة-مكة المكرمة': 80, 'جدة-المدينة المنورة': 420, 'جدة-الطائف': 170,
             'جدة-ينبع': 350, 'جدة-رابغ': 150, 'جدة-القنفذة': 290,
-            
-            // الدمام إلى
+            'جدة-أبها': 625, 'جدة-خميس مشيط': 650,
             'الدمام-الرياض': 395, 'الدمام-الأحساء': 150, 'الدمام-الجبيل': 100,
-            'الدمام-الظهران': 20, 'الدمام-الخبر': 25,
-            
-            // أبها إلى
+            'الدمام-الظهران': 20, 'الدمام-الخبر': 25, 'الدمام-حفر الباطن': 430,
+            'الدمام-بريدة': 550, 'الدمام-القصيم': 530,
             'أبها-جازان': 230, 'أبها-نجران': 500, 'أبها-الباحة': 200,
-            
-            // تبوك إلى
+            'أبها-خميس مشيط': 35, 'أبها-الرياض': 1060, 'أبها-جدة': 625,
             'تبوك-حائل': 650, 'تبوك-الجوف': 450, 'تبوك-الرياض': 1150,
-            
-            // مناطق شمالية
+            'تبوك-المدينة المنورة': 680, 'تبوك-بريدة': 850,
+            'حائل-بريدة': 310, 'حائل-الرياض': 640, 'حائل-القصيم': 300,
+            'الأحساء-الدمام': 150, 'الأحساء-الرياض': 320, 'الأحساء-حفر الباطن': 350,
+            'الأحساء-بقيق': 60, 'الأحساء-القطيف': 40,
             'عرعر-رفحاء': 120, 'رفحاء-طريف': 200, 'طريف-عرعر': 320,
-            
-            // مناطق جنوبية
+            'حفر الباطن-الرياض': 500, 'حفر الباطن-الدمام': 430,
             'نجران-شرورة': 350, 'شرورة-الرياض': 1300, 'القنفذة-مكة المكرمة': 320,
-            
-            // المناطق الداخلية
+            'خميس مشيط-أبها': 35, 'خميس مشيط-الرياض': 1040, 'خميس مشيط-جدة': 650,
             'بريدة-حائل': 310, 'حائل-تبوك': 650, 'الخرج-الرياض': 85,
-            'الدوادمي-الرياض': 330, 'شقراء-الرياض': 190, 'المزاحمية-الرياض': 60
+            'الدوادمي-الرياض': 330, 'شقراء-الرياض': 190, 'المزاحمية-الرياض': 60,
+            'بريدة-الرياض': 330, 'بريدة-القصيم': 40
         };
 
         // Translations
         const translations = {
             ar: {
-                title: "الزهراني بترول - آلة حاسبة لتكلفة الوقود الإضافية",
+                title: "الزهراني بترول - نظام حساب تكلفة الوقود الإضافية",
                 inputsTitle: "🔧 المدخلات",
+                plateLabel: "رقم اللوحة",
+                platePlaceholder: "مثال: ABC123 أو 123ABC",
+                plateHint: "أرقام وحروف إنجليزية كابيتل فقط (مثال: ABC123 أو 123ABC)",
+                projectLabel: "اسم المشروع",
+                projectPlaceholder: "أدخل اسم المشروع",
                 fromLabel: "منطقة البداية",
                 fromPlaceholder: "ابدأ الكتابة للبحث عن منطقة...",
                 toLabel: "منطقة النهاية",
@@ -831,21 +1298,73 @@
                 km: "كم",
                 liter: "لتر",
                 
-                modalTitle: "إدخال كلمة المرور",
+                adminLoginTitle: "تسجيل دخول المسؤول",
+                usernamePlaceholder: "أدخل اسم المستخدم",
                 passwordPlaceholder: "أدخل كلمة المرور",
                 cancelBtn: "إلغاء",
-                confirmBtn: "تأكيد",
+                confirmBtn: "تسجيل الدخول",
+                
+                modalTitle: "إدخال كلمة المرور",
+                passwordPlaceholder: "أدخل كلمة المرور",
+                
+                adminPanelTitle: "👑 لوحة تحكم المسؤول - النظام الإداري",
+                backToCalc: "العودة للآلة الحاسبة",
+                searchPlaceholder: "ابحث برقم اللوحة، المشروع، أو المشرف...",
+                adminDashboardLoading: "جاري تحميل البيانات...",
+                
+                tablePlate: "رقم اللوحة",
+                tableProject: "المشروع",
+                tableFrom: "منطقة البداية",
+                tableTo: "منطقة النهاية",
+                tableDistance: "المسافة (كم)",
+                tableFuelType: "نوع الوقود",
+                tableQuantity: "الكمية (لتر)",
+                tableCost: "التكلفة (ر.س)",
+                tableAdmin: "المشرف",
+                tableDate: "التاريخ",
+                tableStatus: "الحالة",
+                tableActions: "الإجراءات",
+                
+                supervisorsTitle: "👥 إدارة المشرفين",
+                supervisorUsername: "اسم المستخدم",
+                supervisorDisplayName: "اسم العرض",
+                supervisorRegisterDate: "تاريخ التسجيل",
+                supervisorStatus: "الحالة",
+                supervisorRequestsCount: "عدد الطلبات",
+                supervisorLastLogin: "آخر دخول",
+                
+                statusPending: "قيد الانتظار",
+                statusApproved: "معتمدة",
+                statusRejected: "مرفوضة",
+                statusActive: "نشط",
+                statusInactive: "غير نشط",
+                
+                actionApprove: "موافقة",
+                actionReject: "رفض",
+                actionActivate: "تفعيل",
+                actionDeactivate: "إيقاف",
                 
                 errorRegion: "يرجى تحديد منطقتي البداية والنهاية بشكل صحيح",
                 errorDistance: "تعذر حساب المسافة بين المناطق المحددة. يرجى التأكد من صحة المناطق المدخلة",
                 errorApi: "خطأ في الاتصال بخدمة الحساب",
                 errorPassword: "كلمة المرور غير صحيحة",
                 errorConsumptionDiesel: "قيمة استهلاك الديزل ثابتة عند 10 كم/لتر",
-                errorConsumptionGasoline: "قيمة استهلاك البنزين ثابتة عند 18 كم/لتر"
+                errorConsumptionGasoline: "قيمة استهلاك البنزين ثابتة عند 18 كم/لتر",
+                errorInvalidRegion: "يرجى إدخال مناطق سعودية صحيحة",
+                errorLogin: "اسم المستخدم أو كلمة المرور غير صحيحة",
+                errorPlateRequired: "يرجى إدخال رقم اللوحة",
+                errorProjectRequired: "يرجى إدخال اسم المشروع",
+                errorPlateFormat: "رقم اللوحة غير صحيح. استخدم أرقام وحروف إنجليزية كابيتل فقط. مثال: ABC123 أو 123ABC",
+                logout: "تسجيل الخروج"
             },
             en: {
-                title: "Alzahrani Petroleum - Smart Fuel Extra Cost Calculator",
+                title: "Alzahrani Petroleum - Fuel Extra Cost Calculation System",
                 inputsTitle: "🔧 Inputs",
+                plateLabel: "Plate Number",
+                platePlaceholder: "Example: ABC123 or 123ABC",
+                plateHint: "Capital English letters and numbers only (Example: ABC123 or 123ABC)",
+                projectLabel: "Project Name",
+                projectPlaceholder: "Enter project name",
                 fromLabel: "From Region",
                 fromPlaceholder: "Start typing to search for region...",
                 toLabel: "To Region",
@@ -872,21 +1391,70 @@
                 km: "km",
                 liter: "L",
                 
-                modalTitle: "Enter Password",
+                adminLoginTitle: "Admin Login",
+                usernamePlaceholder: "Enter username",
                 passwordPlaceholder: "Enter password",
                 cancelBtn: "Cancel",
-                confirmBtn: "Confirm",
+                confirmBtn: "Login",
+                
+                modalTitle: "Enter Password",
+                passwordPlaceholder: "Enter password",
+                
+                adminPanelTitle: "👑 Admin Control Panel - Management System",
+                backToCalc: "Back to Calculator",
+                searchPlaceholder: "Search by plate, project, or supervisor...",
+                adminDashboardLoading: "Loading data...",
+                
+                tablePlate: "Plate Number",
+                tableProject: "Project",
+                tableFrom: "From",
+                tableTo: "To",
+                tableDistance: "Distance (km)",
+                tableFuelType: "Fuel Type",
+                tableQuantity: "Quantity (L)",
+                tableCost: "Cost (SAR)",
+                tableAdmin: "Supervisor",
+                tableDate: "Date",
+                tableStatus: "Status",
+                tableActions: "Actions",
+                
+                supervisorsTitle: "👥 Supervisors Management",
+                supervisorUsername: "Username",
+                supervisorDisplayName: "Display Name",
+                supervisorRegisterDate: "Register Date",
+                supervisorStatus: "Status",
+                supervisorRequestsCount: "Requests Count",
+                supervisorLastLogin: "Last Login",
+                
+                statusPending: "Pending",
+                statusApproved: "Approved",
+                statusRejected: "Rejected",
+                statusActive: "Active",
+                statusInactive: "Inactive",
+                
+                actionApprove: "Approve",
+                actionReject: "Reject",
+                actionActivate: "Activate",
+                actionDeactivate: "Deactivate",
                 
                 errorRegion: "Please specify both starting and destination regions correctly",
                 errorDistance: "Unable to calculate distance between selected regions. Please verify the regions entered",
                 errorApi: "Error connecting to calculation service",
                 errorPassword: "Incorrect password",
                 errorConsumptionDiesel: "Diesel consumption is fixed at 10 km/liter",
-                errorConsumptionGasoline: "Gasoline consumption is fixed at 18 km/liter"
+                errorConsumptionGasoline: "Gasoline consumption is fixed at 18 km/liter",
+                errorInvalidRegion: "Please enter valid Saudi regions",
+                errorLogin: "Incorrect username or password",
+                errorPlateRequired: "Please enter plate number",
+                errorProjectRequired: "Please enter project name",
+                errorPlateFormat: "Invalid plate number format. Use capital English letters and numbers only. Example: ABC123 or 123ABC",
+                logout: "Logout"
             }
         };
 
         // DOM Elements
+        const adminLoginModal = document.getElementById('admin-login-modal');
+        const mainContainer = document.getElementById('main-container');
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         const languageToggle = document.getElementById('language-toggle');
@@ -908,6 +1476,31 @@
         const consumptionError = document.getElementById('consumption-error');
         const fromSuggestions = document.getElementById('from-suggestions');
         const toSuggestions = document.getElementById('to-suggestions');
+        const adminLoginConfirm = document.getElementById('admin-login-confirm');
+        const adminLoginCancel = document.getElementById('admin-login-cancel');
+        const adminUsernameInput = document.getElementById('admin-username');
+        const adminPasswordInput = document.getElementById('admin-password');
+        const adminLoginError = document.getElementById('admin-login-error');
+        const adminPanelBtn = document.getElementById('admin-panel-btn');
+        const backToCalcBtn = document.getElementById('back-to-calc');
+        const calculatorSection = document.getElementById('calculator-section');
+        const adminPanelSection = document.getElementById('admin-panel-section');
+        const logoutBtn = document.getElementById('logout-btn');
+        const plateNumberInput = document.getElementById('plate-number');
+        const projectNameInput = document.getElementById('project-name');
+        const adminSearchFilter = document.getElementById('admin-search-filter');
+        const filterStatus = document.getElementById('filter-status');
+        const filterFuelType = document.getElementById('filter-fuel-type');
+        const adminDashboardLoading = document.getElementById('admin-dashboard-loading');
+        const adminRequestsBody = document.getElementById('admin-requests-body');
+        const supervisorsBody = document.getElementById('supervisors-body');
+        const supervisorsLoading = document.getElementById('supervisors-loading');
+        const totalRequestsElement = document.getElementById('total-requests');
+        const pendingRequestsElement = document.getElementById('pending-requests');
+        const totalFuelElement = document.getElementById('total-fuel');
+        const totalCostElement = document.getElementById('total-cost');
+        const plateHint = document.getElementById('plate-hint');
+        const logoElement = document.getElementById('logo-clickable');
 
         // Initialize the calculator
         function initCalculator() {
@@ -924,8 +1517,36 @@
                 if (e.key === 'Enter') verifyPassword();
             });
             
+            // Admin login event listeners (for secret access)
+            adminLoginConfirm.addEventListener('click', handleAdminLogin);
+            adminLoginCancel.addEventListener('click', handleAdminLoginCancel);
+            adminUsernameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleAdminLogin();
+            });
+            adminPasswordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleAdminLogin();
+            });
+            
+            // Admin panel event listeners
+            adminPanelBtn.addEventListener('click', showAdminPanel);
+            backToCalcBtn.addEventListener('click', showCalculator);
+            logoutBtn.addEventListener('click', handleLogout);
+            
+            // Filter event listeners
+            adminSearchFilter.addEventListener('input', filterAdminRequests);
+            filterStatus.addEventListener('change', filterAdminRequests);
+            filterFuelType.addEventListener('change', filterAdminRequests);
+            
+            // Plate number input - convert to uppercase
+            plateNumberInput.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+            
             // Setup region input listeners
             setupRegionInputListeners();
+            
+            // Logo click listener for secret admin access
+            logoElement.addEventListener('click', handleLogoClick);
             
             // Apply saved preferences
             applySavedPreferences();
@@ -935,6 +1556,192 @@
             
             // Set default consumption based on initial fuel type
             updateConsumption();
+            
+            // Initialize Firebase data
+            initializeFirebaseData();
+            
+            // Auto-login as guest user for calculator access
+            autoLoginAsGuest();
+        }
+
+        // Auto-login as guest user
+        function autoLoginAsGuest() {
+            currentUser = {
+                username: 'guest',
+                displayName: 'زائر',
+                isAdmin: false
+            };
+            
+            // Hide admin elements
+            hideAdminElements();
+        }
+
+        // Handle logo click for secret admin access
+        function handleLogoClick() {
+            logoClickCount++;
+            
+            // Reset timer if this is the first click
+            if (logoClickCount === 1) {
+                logoClickTimer = setTimeout(() => {
+                    logoClickCount = 0; // Reset after timeout
+                }, LOGO_CLICK_TIMEOUT);
+            }
+            
+            // Check if user has clicked enough times
+            if (logoClickCount >= LOGO_CLICK_SECRET) {
+                clearTimeout(logoClickTimer);
+                logoClickCount = 0;
+                showAdminLoginModal();
+            }
+        }
+
+        // Show admin login modal (secret access)
+        function showAdminLoginModal() {
+            adminLoginModal.classList.add('active');
+            adminUsernameInput.value = '';
+            adminPasswordInput.value = '';
+            adminLoginError.classList.remove('show');
+            adminUsernameInput.focus();
+        }
+
+        // Initialize Firebase with default data
+        function initializeFirebaseData() {
+            if (!database) return;
+            
+            // Check if admin exists, if not create it
+            database.ref('supervisors').once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    // Create admin account
+                    const adminData = {
+                        username: "admin",
+                        password: ADMIN_PASSWORD,
+                        displayName: "مسؤول النظام",
+                        status: 'active',
+                        registrationDate: new Date().toISOString(),
+                        lastLogin: null,
+                        requestsCount: 0,
+                        isAdmin: true
+                    };
+                    
+                    database.ref('supervisors').push(adminData)
+                        .then(() => console.log("Admin account created in Firebase"))
+                        .catch(error => console.error("Error creating admin:", error));
+                }
+            });
+        }
+
+        // Handle admin login
+        function handleAdminLogin() {
+            const username = adminUsernameInput.value.trim();
+            const password = adminPasswordInput.value.trim();
+            
+            if (!username || !password) {
+                showAdminError(translations[currentLanguage].errorLogin);
+                return;
+            }
+            
+            // Check admin credentials (using the password you keep in your head)
+            if (password === ADMIN_PASSWORD) {
+                currentUser = {
+                    username: username || "admin",
+                    displayName: "مسؤول النظام",
+                    isAdmin: true
+                };
+                completeAdminLogin();
+            } else {
+                showAdminError(translations[currentLanguage].errorLogin);
+            }
+        }
+
+        // Complete admin login
+        function completeAdminLogin() {
+            // Hide login modal
+            adminLoginModal.classList.remove('active');
+            
+            // Show admin elements
+            showAdminElements();
+            
+            // Show admin panel
+            showAdminPanel();
+            
+            // Save login state
+            localStorage.setItem('fuelCalculatorAdminLoggedIn', 'true');
+            localStorage.setItem('fuelCalculatorAdminUsername', currentUser.username);
+        }
+
+        // Show admin elements
+        function showAdminElements() {
+            adminPanelBtn.classList.remove('hidden-admin-btn');
+            logoutBtn.classList.remove('hidden-admin-btn');
+        }
+
+        // Hide admin elements
+        function hideAdminElements() {
+            adminPanelBtn.classList.add('hidden-admin-btn');
+            logoutBtn.classList.add('hidden-admin-btn');
+        }
+
+        // Handle admin login cancel
+        function handleAdminLoginCancel() {
+            adminLoginModal.classList.remove('active');
+            logoClickCount = 0;
+        }
+
+        // Show admin error
+        function showAdminError(message) {
+            adminLoginError.textContent = message;
+            adminLoginError.classList.add('show');
+        }
+
+        // Show admin panel
+        function showAdminPanel() {
+            calculatorSection.style.display = 'none';
+            adminPanelSection.classList.add('active');
+            loadAdminDashboardData();
+        }
+
+        // Show calculator
+        function showCalculator() {
+            calculatorSection.style.display = 'grid';
+            adminPanelSection.classList.remove('active');
+        }
+
+        // Handle logout
+        function handleLogout() {
+            if (confirm('هل تريد تسجيل الخروج من حساب المسؤول؟')) {
+                currentUser = {
+                    username: 'guest',
+                    displayName: 'زائر',
+                    isAdmin: false
+                };
+                
+                localStorage.removeItem('fuelCalculatorAdminLoggedIn');
+                localStorage.removeItem('fuelCalculatorAdminUsername');
+                
+                // Hide admin elements
+                hideAdminElements();
+                
+                // Show calculator
+                showCalculator();
+            }
+        }
+
+        // Check if admin is logged in
+        function checkAdminLoginStatus() {
+            const isAdminLoggedIn = localStorage.getItem('fuelCalculatorAdminLoggedIn') === 'true';
+            const adminUsername = localStorage.getItem('fuelCalculatorAdminUsername');
+            
+            if (isAdminLoggedIn && adminUsername) {
+                currentUser = {
+                    username: adminUsername,
+                    displayName: "مسؤول النظام",
+                    isAdmin: true
+                };
+                
+                showAdminElements();
+                return true;
+            }
+            return false;
         }
 
         // Setup region input listeners with suggestions
@@ -1026,7 +1833,7 @@
             toSuggestions.classList.remove('show');
         }
 
-        // Validate if region is valid (in our database or contains Saudi keywords)
+        // Validate if region is valid
         function validateSaudiRegion(region) {
             if (!region || region.trim() === '') return false;
             
@@ -1044,6 +1851,16 @@
             ];
             
             return saudiKeywords.some(keyword => regionLower.includes(keyword.toLowerCase()));
+        }
+
+        // Validate plate number (new format: English capital letters and numbers)
+        function validatePlateNumber(plate) {
+            if (!plate || plate.trim() === '') return false;
+            
+            // New format: English capital letters and numbers, letters can be on left or right
+            // Examples: ABC123, 123ABC, AB1234, 1234AB
+            const plateRegex = /^[A-Z]{2,3}\d{1,4}$|^\d{1,4}[A-Z]{2,3}$/;
+            return plateRegex.test(plate.trim());
         }
 
         // Toggle between light and dark themes
@@ -1083,6 +1900,11 @@
             // Update UI elements
             document.getElementById('main-title').textContent = t.title;
             document.getElementById('inputs-title').textContent = t.inputsTitle;
+            document.getElementById('plate-label').textContent = t.plateLabel;
+            document.getElementById('plate-number').placeholder = t.platePlaceholder;
+            document.getElementById('plate-hint').textContent = t.plateHint;
+            document.getElementById('project-label').textContent = t.projectLabel;
+            document.getElementById('project-name').placeholder = t.projectPlaceholder;
             document.getElementById('from-label').textContent = t.fromLabel;
             document.getElementById('from-region').placeholder = t.fromPlaceholder;
             document.getElementById('to-label').textContent = t.toLabel;
@@ -1105,11 +1927,65 @@
             document.querySelector('option[value="gasoline91"]').textContent = t.gasoline91;
             document.querySelector('option[value="gasoline95"]').textContent = t.gasoline95;
             
-            // Update modal
+            // Update admin login modal
+            document.getElementById('admin-login-title').textContent = t.adminLoginTitle;
+            document.getElementById('admin-username').placeholder = t.usernamePlaceholder;
+            document.getElementById('admin-password').placeholder = t.passwordPlaceholder;
+            document.getElementById('admin-login-confirm').textContent = t.confirmBtn;
+            document.getElementById('admin-login-cancel').textContent = t.cancelBtn;
+            
+            // Update password modal
             document.getElementById('modal-title').textContent = t.modalTitle;
             passwordInput.placeholder = t.passwordPlaceholder;
             modalCancel.textContent = t.cancelBtn;
             modalConfirm.textContent = t.confirmBtn;
+            
+            // Update admin panel
+            document.querySelector('#admin-panel-section .card-title').textContent = t.adminPanelTitle;
+            document.getElementById('back-to-calc').innerHTML = `<span>↩</span><span>${t.backToCalc}</span>`;
+            document.getElementById('admin-search-filter').placeholder = t.searchPlaceholder;
+            document.getElementById('admin-dashboard-loading-text').textContent = t.adminDashboardLoading;
+            
+            // Update supervisors table headers
+            const supervisorsHeaders = document.querySelectorAll('#supervisors-table th');
+            if (supervisorsHeaders.length >= 7) {
+                supervisorsHeaders[0].textContent = t.supervisorUsername;
+                supervisorsHeaders[1].textContent = t.supervisorDisplayName;
+                supervisorsHeaders[2].textContent = t.supervisorRegisterDate;
+                supervisorsHeaders[3].textContent = t.supervisorStatus;
+                supervisorsHeaders[4].textContent = t.supervisorRequestsCount;
+                supervisorsHeaders[5].textContent = t.supervisorLastLogin;
+                supervisorsHeaders[6].textContent = t.tableActions;
+            }
+            
+            // Update admin table headers
+            const adminHeaders = document.querySelectorAll('#admin-requests-table th');
+            if (adminHeaders.length >= 12) {
+                adminHeaders[0].textContent = t.tablePlate;
+                adminHeaders[1].textContent = t.tableProject;
+                adminHeaders[2].textContent = t.tableFrom;
+                adminHeaders[3].textContent = t.tableTo;
+                adminHeaders[4].textContent = t.tableDistance;
+                adminHeaders[5].textContent = t.tableFuelType;
+                adminHeaders[6].textContent = t.tableQuantity;
+                adminHeaders[7].textContent = t.tableCost;
+                adminHeaders[8].textContent = t.tableAdmin;
+                adminHeaders[9].textContent = t.tableDate;
+                adminHeaders[10].textContent = t.tableStatus;
+                adminHeaders[11].textContent = t.tableActions;
+            }
+            
+            // Update filter options
+            const filterStatusOptions = document.querySelectorAll('#filter-status option');
+            if (filterStatusOptions.length >= 4) {
+                filterStatusOptions[0].textContent = 'جميع الحالات';
+                filterStatusOptions[1].textContent = t.statusPending;
+                filterStatusOptions[2].textContent = t.statusApproved;
+                filterStatusOptions[3].textContent = t.statusRejected;
+            }
+            
+            // Update logout button
+            document.getElementById('logout-btn').innerHTML = `<span>🚪</span><span>${t.logout}</span>`;
             
             // Update units in results
             document.querySelectorAll('.result-unit').forEach(unit => {
@@ -1148,7 +2024,7 @@
             consumptionError.textContent = '';
         }
 
-        // Validate consumption value based on fuel type - UPDATED to fixed values
+        // Validate consumption value based on fuel type
         function validateConsumption() {
             const consumption = parseFloat(fuelConsumptionInput.value);
             const fuelType = fuelTypeSelect.value;
@@ -1244,7 +2120,7 @@
         async function calculateDistance(origin, destination) {
             // First, validate both regions are Saudi regions
             if (!validateSaudiRegion(origin) || !validateSaudiRegion(destination)) {
-                throw new Error(translations[currentLanguage].errorRegion);
+                throw new Error(translations[currentLanguage].errorInvalidRegion);
             }
             
             // Clean region names for matching
@@ -1262,10 +2138,9 @@
             }
             
             // If not found, calculate approximate distance based on region type
-            // For simplicity, we'll use average distances based on region categories
             
             // Check if regions are in same city or nearby
-            const mainCities = ['الرياض', 'جدة', 'الدمام', 'مكة المكرمة', 'المدينة المنورة'];
+            const mainCities = ['الرياض', 'جدة', 'الدمام', 'مكة المكرمة', 'المدينة المنورة', 'أبها', 'الأحساء', 'حفر الباطن'];
             const originCity = mainCities.find(city => cleanOrigin.includes(city));
             const destCity = mainCities.find(city => cleanDestination.includes(city));
             
@@ -1277,8 +2152,11 @@
                     // Between major cities, use average distances
                     const interCityDistances = {
                         'الرياض-جدة': 950, 'الرياض-الدمام': 395, 'الرياض-مكة المكرمة': 880,
-                        'الرياض-المدينة المنورة': 850, 'جدة-الدمام': 1345, 'جدة-المدينة المنورة': 420,
-                        'الدمام-المدينة المنورة': 1420, 'مكة المكرمة-المدينة المنورة': 420
+                        'الرياض-المدينة المنورة': 850, 'الرياض-أبها': 1060, 'الرياض-الأحساء': 320,
+                        'الرياض-حفر الباطن': 500, 'جدة-الدمام': 1345, 'جدة-المدينة المنورة': 420,
+                        'جدة-أبها': 625, 'الدمام-المدينة المنورة': 1420, 'مكة المكرمة-المدينة المنورة': 420,
+                        'الأحساء-الدمام': 150, 'الأحساء-الرياض': 320, 'حفر الباطن-الرياض': 500,
+                        'حفر الباطن-الدمام': 430, 'أبها-الرياض': 1060, 'أبها-جدة': 625
                     };
                     
                     const key = `${originCity}-${destCity}`;
@@ -1294,10 +2172,10 @@
             const getRegionGroup = (region) => {
                 if (region.startsWith('الر') || region.includes('رياض')) return 'center';
                 if (region.startsWith('ج') || region.includes('مكة') || region.includes('طائف')) return 'west';
-                if (region.startsWith('الدم') || region.includes('شرقية') || region.includes('خبر')) return 'east';
+                if (region.startsWith('الدم') || region.includes('شرقية') || region.includes('خبر') || region.includes('أحساء')) return 'east';
                 if (region.includes('مدينة') || region.includes('ينبع')) return 'north_west';
-                if (region.startsWith('أب') || region.includes('جازان') || region.includes('نجران')) return 'south';
-                if (region.includes('حائل') || region.includes('تبوك') || region.includes('عرعر')) return 'north';
+                if (region.startsWith('أب') || region.includes('جازان') || region.includes('نجران') || region.includes('خميس')) return 'south';
+                if (region.includes('حائل') || region.includes('تبوك') || region.includes('عرعر') || region.includes('حفر')) return 'north';
                 return 'other';
             };
             
@@ -1309,7 +2187,7 @@
                 'center-west': 850,
                 'center-east': 400,
                 'center-north_west': 850,
-                'center-south': 950,
+                'center-south': 1000,
                 'center-north': 650,
                 'west-east': 1350,
                 'west-north_west': 420,
@@ -1337,10 +2215,28 @@
         async function calculateCost() {
             const fromRegion = fromRegionInput.value.trim();
             const toRegion = toRegionInput.value.trim();
+            const plateNumber = plateNumberInput.value.trim();
+            const projectName = projectNameInput.value.trim();
             
             // Validate inputs
+            if (!plateNumber) {
+                alert(translations[currentLanguage].errorPlateRequired);
+                return;
+            }
+            
+            if (!projectName) {
+                alert(translations[currentLanguage].errorProjectRequired);
+                return;
+            }
+            
             if (!fromRegion || !toRegion) {
                 alert(translations[currentLanguage].errorRegion);
+                return;
+            }
+            
+            // Validate plate number format (new format)
+            if (!validatePlateNumber(plateNumber)) {
+                alert(translations[currentLanguage].errorPlateFormat);
                 return;
             }
             
@@ -1374,7 +2270,7 @@
                 document.getElementById('extra-cost').textContent = extraCost.toFixed(2);
                 
                 // Log calculation to Firebase
-                logCalculationToFirebase(fromRegion, toRegion, distance, fuelNeeded, extraCost);
+                logCalculationToFirebase(fromRegion, toRegion, distance, fuelNeeded, extraCost, plateNumber, projectName);
                 
             } catch (error) {
                 console.error('Calculation error:', error);
@@ -1404,10 +2300,16 @@
         }
 
         // Log calculation to Firebase
-        function logCalculationToFirebase(fromRegion, toRegion, distance, fuelNeeded, extraCost) {
+        function logCalculationToFirebase(fromRegion, toRegion, distance, fuelNeeded, extraCost, plateNumber, projectName) {
             try {
-                const database = firebase.database();
                 const timestamp = new Date().toISOString();
+                const date = new Date().toLocaleDateString('ar-SA', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
                 
                 const calculationData = {
                     fromRegion,
@@ -1420,18 +2322,423 @@
                     fuelConsumption: parseFloat(fuelConsumptionInput.value),
                     fuelNeeded,
                     extraCost,
+                    plateNumber,
+                    projectName,
+                    supervisorName: currentUser ? currentUser.displayName : 'زائر',
+                    supervisorUsername: currentUser ? currentUser.username : 'guest',
                     timestamp,
+                    date,
+                    status: 'pending',
                     language: currentLanguage,
                     theme: isDarkMode ? 'dark' : 'light',
                     consumptionLocked: isConsumptionLocked
                 };
                 
-                database.ref('calculations').push(calculationData)
-                    .then(() => console.log('Calculation logged to Firebase'))
-                    .catch(error => console.error('Firebase logging error:', error));
+                if (!database) {
+                    // حالة التخزين المحلي
+                    const requests = JSON.parse(localStorage.getItem('fuelRequests') || '[]');
+                    calculationData.id = 'request_' + Date.now();
+                    requests.push(calculationData);
+                    localStorage.setItem('fuelRequests', JSON.stringify(requests));
+                    
+                    console.log('Fuel request saved locally:', calculationData);
+                    alert('تم حفظ طلب الوقود بنجاح!');
+                    return;
+                }
+                
+                database.ref('fuelRequests').push(calculationData)
+                    .then(() => {
+                        console.log('Fuel request logged to Firebase');
+                        alert('تم حفظ طلب الوقود بنجاح!');
+                    })
+                    .catch(error => {
+                        console.error('Firebase logging error:', error);
+                        alert('حدث خطأ في حفظ الطلب. الرجاء المحاولة مرة أخرى.');
+                    });
             } catch (error) {
                 console.error('Firebase logging error:', error);
             }
+        }
+
+        // Load admin dashboard data
+        function loadAdminDashboardData() {
+            adminDashboardLoading.style.display = 'block';
+            supervisorsLoading.style.display = 'block';
+            adminRequestsBody.innerHTML = '';
+            supervisorsBody.innerHTML = '';
+            
+            // Load fuel requests
+            if (!database) {
+                // حالة التخزين المحلي
+                setTimeout(() => {
+                    adminDashboardLoading.style.display = 'none';
+                    supervisorsLoading.style.display = 'none';
+                    
+                    // Load local requests
+                    const requests = JSON.parse(localStorage.getItem('fuelRequests') || '[]');
+                    
+                    // Update stats
+                    updateStats({
+                        total: requests.length,
+                        pending: requests.filter(r => r.status === 'pending').length,
+                        totalFuel: requests.reduce((sum, r) => sum + (r.fuelNeeded || 0), 0),
+                        totalCost: requests.reduce((sum, r) => sum + (r.extraCost || 0), 0)
+                    });
+                    
+                    // Display requests
+                    displayAdminRequests(requests);
+                    
+                    // Display supervisors (empty for local storage)
+                    supervisorsBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px;">
+                                لا توجد حسابات مشرفين في التخزين المحلي
+                            </td>
+                        </tr>
+                    `;
+                }, 1000);
+                return;
+            }
+            
+            database.ref('fuelRequests').once('value')
+                .then((snapshot) => {
+                    adminDashboardLoading.style.display = 'none';
+                    
+                    if (!snapshot.exists()) {
+                        adminRequestsBody.innerHTML = `
+                            <tr>
+                                <td colspan="12" style="text-align: center; padding: 40px;">
+                                    لا توجد طلبات وقود حتى الآن
+                                </td>
+                            </tr>
+                        `;
+                        updateStats({});
+                        return;
+                    }
+                    
+                    const requests = [];
+                    let totalFuel = 0;
+                    let totalCost = 0;
+                    let pendingCount = 0;
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const request = childSnapshot.val();
+                        request.id = childSnapshot.key;
+                        requests.push(request);
+                        
+                        // Calculate totals
+                        totalFuel += request.fuelNeeded || 0;
+                        totalCost += request.extraCost || 0;
+                        if (request.status === 'pending') pendingCount++;
+                    });
+                    
+                    // Sort by date (newest first)
+                    requests.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    // Update stats
+                    updateStats({
+                        total: requests.length,
+                        pending: pendingCount,
+                        totalFuel: totalFuel,
+                        totalCost: totalCost
+                    });
+                    
+                    // Display requests
+                    displayAdminRequests(requests);
+                })
+                .catch((error) => {
+                    console.error('Error loading admin dashboard data:', error);
+                    adminDashboardLoading.style.display = 'none';
+                    adminRequestsBody.innerHTML = `
+                        <tr>
+                            <td colspan="12" style="text-align: center; padding: 40px; color: #ea4335;">
+                                حدث خطأ في تحميل البيانات
+                            </td>
+                        </tr>
+                    `;
+                });
+            
+            // Load supervisors
+            database.ref('supervisors').once('value')
+                .then((snapshot) => {
+                    supervisorsLoading.style.display = 'none';
+                    
+                    if (!snapshot.exists()) {
+                        supervisorsBody.innerHTML = `
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                    لا توجد حسابات مشرفين حتى الآن
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                    
+                    const supervisors = [];
+                    snapshot.forEach((childSnapshot) => {
+                        const supervisor = childSnapshot.val();
+                        supervisor.id = childSnapshot.key;
+                        supervisors.push(supervisor);
+                    });
+                    
+                    // Display supervisors
+                    displaySupervisors(supervisors);
+                })
+                .catch((error) => {
+                    console.error('Error loading supervisors data:', error);
+                    supervisorsLoading.style.display = 'none';
+                });
+        }
+
+        // Update stats
+        function updateStats(stats) {
+            totalRequestsElement.textContent = stats.total || 0;
+            pendingRequestsElement.textContent = stats.pending || 0;
+            totalFuelElement.textContent = stats.totalFuel ? stats.totalFuel.toFixed(1) : 0;
+            totalCostElement.textContent = stats.totalCost ? stats.totalCost.toFixed(2) : 0;
+        }
+
+        // Display supervisors in table
+        function displaySupervisors(supervisors) {
+            supervisorsBody.innerHTML = '';
+            
+            if (supervisors.length === 0) {
+                supervisorsBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            لا توجد حسابات مشرفين حتى الآن
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            supervisors.forEach((supervisor) => {
+                const statusText = supervisor.status === 'active' ? 'نشط' : 
+                                 supervisor.status === 'pending' ? 'قيد الانتظار' : 'غير نشط';
+                
+                const statusClass = supervisor.status === 'active' ? 'status-approved' :
+                                  supervisor.status === 'pending' ? 'status-pending' : 'status-rejected';
+                
+                const date = new Date(supervisor.registrationDate).toLocaleDateString('ar-SA');
+                const lastLogin = supervisor.lastLogin ? 
+                    new Date(supervisor.lastLogin).toLocaleDateString('ar-SA') : 'لم يسجل دخول بعد';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${supervisor.username}</td>
+                    <td>${supervisor.displayName}</td>
+                    <td>${date}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${supervisor.requestsCount || 0}</td>
+                    <td>${lastLogin}</td>
+                    <td>
+                        ${supervisor.status === 'pending' ? 
+                            `<button class="modal-btn modal-confirm" style="padding: 5px 10px; font-size: 0.8rem;" onclick="approveSupervisor('${supervisor.id}')">تفعيل</button>` : 
+                        supervisor.status === 'active' && !supervisor.isAdmin ? 
+                            `<button class="modal-btn modal-cancel" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deactivateSupervisor('${supervisor.id}')">إيقاف</button>` :
+                        supervisor.status === 'inactive' && !supervisor.isAdmin ? 
+                            `<button class="modal-btn modal-confirm" style="padding: 5px 10px; font-size: 0.8rem;" onclick="activateSupervisor('${supervisor.id}')">تفعيل</button>` : ''}
+                    </td>
+                `;
+                supervisorsBody.appendChild(row);
+            });
+        }
+
+        // Approve supervisor (for admin use)
+        window.approveSupervisor = function(supervisorId) {
+            if (!confirm('هل تريد تفعيل هذا المشرف؟')) return;
+            
+            if (!database) {
+                alert('لا يمكن إدارة المشرفين في وضع التخزين المحلي');
+                return;
+            }
+            
+            database.ref(`supervisors/${supervisorId}/status`).set('active')
+                .then(() => {
+                    alert('تم تفعيل المشرف بنجاح!');
+                    loadAdminDashboardData();
+                })
+                .catch(error => {
+                    console.error('Error approving supervisor:', error);
+                    alert('حدث خطأ أثناء تفعيل المشرف');
+                });
+        };
+
+        // Deactivate supervisor (for admin use)
+        window.deactivateSupervisor = function(supervisorId) {
+            if (!confirm('هل تريد إيقاف هذا المشرف؟')) return;
+            
+            if (!database) {
+                alert('لا يمكن إدارة المشرفين في وضع التخزين المحلي');
+                return;
+            }
+            
+            database.ref(`supervisors/${supervisorId}/status`).set('inactive')
+                .then(() => {
+                    alert('تم إيقاف المشرف بنجاح!');
+                    loadAdminDashboardData();
+                })
+                .catch(error => {
+                    console.error('Error deactivating supervisor:', error);
+                    alert('حدث خطأ أثناء إيقاف المشرف');
+                });
+        };
+
+        // Activate supervisor (for admin use)
+        window.activateSupervisor = function(supervisorId) {
+            if (!confirm('هل تريد تفعيل هذا المشرف؟')) return;
+            
+            if (!database) {
+                alert('لا يمكن إدارة المشرفين في وضع التخزين المحلي');
+                return;
+            }
+            
+            database.ref(`supervisors/${supervisorId}/status`).set('active')
+                .then(() => {
+                    alert('تم تفعيل المشرف بنجاح!');
+                    loadAdminDashboardData();
+                })
+                .catch(error => {
+                    console.error('Error activating supervisor:', error);
+                    alert('حدث خطأ أثناء تفعيل المشرف');
+                });
+        };
+
+        // Display admin requests in table
+        function displayAdminRequests(requests) {
+            adminRequestsBody.innerHTML = '';
+            
+            if (requests.length === 0) {
+                adminRequestsBody.innerHTML = `
+                    <tr>
+                        <td colspan="12" style="text-align: center; padding: 40px;">
+                            لا توجد طلبات وقود حتى الآن
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            requests.forEach((request) => {
+                const fuelTypeText = request.fuelType === 'diesel' ? 'ديزل' : 
+                                   request.fuelType === 'gasoline91' ? 'بنزين 91' : 'بنزين 95';
+                
+                const statusText = request.status === 'approved' ? 'معتمدة' :
+                                 request.status === 'rejected' ? 'مرفوضة' : 'قيد الانتظار';
+                
+                const statusClass = request.status === 'approved' ? 'status-approved' :
+                                  request.status === 'rejected' ? 'status-rejected' : 'status-pending';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${request.plateNumber || 'غير محدد'}</td>
+                    <td>${request.projectName || 'غير محدد'}</td>
+                    <td>${request.fromRegion}</td>
+                    <td>${request.toRegion}</td>
+                    <td>${request.distance ? request.distance.toFixed(0) : 0} كم</td>
+                    <td>${fuelTypeText}</td>
+                    <td>${request.fuelNeeded ? request.fuelNeeded.toFixed(1) : 0} لتر</td>
+                    <td>${request.extraCost ? request.extraCost.toFixed(2) : 0} ر.س</td>
+                    <td>${request.supervisorName || 'غير معروف'}</td>
+                    <td>${request.date || new Date(request.timestamp).toLocaleDateString('ar-SA')}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        ${request.status === 'pending' ? `
+                            <button class="modal-btn modal-confirm" style="padding: 5px 10px; font-size: 0.8rem; margin-bottom: 5px;" onclick="approveRequest('${request.id}')">موافقة</button>
+                            <button class="modal-btn modal-cancel" style="padding: 5px 10px; font-size: 0.8rem;" onclick="rejectRequest('${request.id}')">رفض</button>
+                        ` : ''}
+                    </td>
+                `;
+                adminRequestsBody.appendChild(row);
+            });
+        }
+
+        // Approve request (for admin use)
+        window.approveRequest = function(requestId) {
+            if (!confirm('هل تريد الموافقة على هذا الطلب؟')) return;
+            
+            if (!database) {
+                // حالة التخزين المحلي
+                const requests = JSON.parse(localStorage.getItem('fuelRequests') || '[]');
+                const requestIndex = requests.findIndex(r => r.id === requestId);
+                if (requestIndex !== -1) {
+                    requests[requestIndex].status = 'approved';
+                    localStorage.setItem('fuelRequests', JSON.stringify(requests));
+                    loadAdminDashboardData();
+                    alert('تمت الموافقة على الطلب بنجاح!');
+                }
+                return;
+            }
+            
+            database.ref(`fuelRequests/${requestId}/status`).set('approved')
+                .then(() => {
+                    alert('تمت الموافقة على الطلب بنجاح!');
+                    loadAdminDashboardData();
+                })
+                .catch(error => {
+                    console.error('Error approving request:', error);
+                    alert('حدث خطأ أثناء الموافقة على الطلب');
+                });
+        };
+
+        // Reject request (for admin use)
+        window.rejectRequest = function(requestId) {
+            if (!confirm('هل تريد رفض هذا الطلب؟')) return;
+            
+            if (!database) {
+                // حالة التخزين المحلي
+                const requests = JSON.parse(localStorage.getItem('fuelRequests') || '[]');
+                const requestIndex = requests.findIndex(r => r.id === requestId);
+                if (requestIndex !== -1) {
+                    requests[requestIndex].status = 'rejected';
+                    localStorage.setItem('fuelRequests', JSON.stringify(requests));
+                    loadAdminDashboardData();
+                    alert('تم رفض الطلب بنجاح!');
+                }
+                return;
+            }
+            
+            database.ref(`fuelRequests/${requestId}/status`).set('rejected')
+                .then(() => {
+                    alert('تم رفض الطلب بنجاح!');
+                    loadAdminDashboardData();
+                })
+                .catch(error => {
+                    console.error('Error rejecting request:', error);
+                    alert('حدث خطأ أثناء رفض الطلب');
+                });
+        };
+
+        // Filter admin requests
+        function filterAdminRequests() {
+            const searchTerm = adminSearchFilter.value.toLowerCase().trim();
+            const statusFilter = filterStatus.value;
+            const fuelTypeFilter = filterFuelType.value;
+            
+            const rows = document.querySelectorAll('#admin-requests-body tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const status = row.querySelector('.status-badge')?.textContent || '';
+                const fuelType = row.cells[5]?.textContent || '';
+                
+                let matchesSearch = searchTerm === '' || text.includes(searchTerm);
+                let matchesStatus = statusFilter === 'all' || 
+                                  (statusFilter === 'pending' && status.includes('انتظار')) ||
+                                  (statusFilter === 'approved' && status.includes('معتمدة')) ||
+                                  (statusFilter === 'rejected' && status.includes('مرفوضة'));
+                let matchesFuelType = fuelTypeFilter === 'all' ||
+                                    (fuelTypeFilter === 'diesel' && fuelType.includes('ديزل')) ||
+                                    (fuelTypeFilter === 'gasoline91' && fuelType.includes('بنزين 91')) ||
+                                    (fuelTypeFilter === 'gasoline95' && fuelType.includes('بنزين 95'));
+                
+                if (matchesSearch && matchesStatus && matchesFuelType) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
 
         // Apply saved preferences from localStorage
@@ -1469,6 +2776,9 @@
                     unlockConsumption();
                 }
             }
+            
+            // Check admin login status
+            checkAdminLoginStatus();
         }
 
         // Save preferences to localStorage when they change
